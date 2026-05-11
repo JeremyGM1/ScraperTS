@@ -36,15 +36,21 @@ async function main() {
 
     const browser = await chromium.launch({ headless: false });
 
-    try {
-      // Run all scrapers in parallel instead of sequentially
+    try {      
+      /*
       const [retrotrac, partequipos, servi] = await Promise.all([
         runRetrotrac(browser, RETROTRAC_EMAIL!, RETROTRAC_PASSWORD!, ref_id),
         runParteequipos(browser, PARTEEQUIPOS_EMAIL!, PARTEEQUIPOS_PASSWORD!, ref_id),
         runServi(browser, SERVI_EMAIL!, SERVI_PASSWORD!, ref_id),
       ]);
+      */
 
-      return reply.send({ retrotrac, partequipos, servi });
+      const [retrotrac] = await Promise.all([
+        runRetrotrac(browser, RETROTRAC_EMAIL!, RETROTRAC_PASSWORD!, ref_id),        
+      ]);
+
+      //return reply.send({ retrotrac, partequipos, servi });
+      return reply.send({ retrotrac});
     } finally {
       await browser.close();
     }
