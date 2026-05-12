@@ -5,5 +5,5 @@ POST {{BASE_URL}}/search
 Content-Type: application/json
 
 {
-  "ref_id": "7s7144"
+  "ref_id": "3532205"
 }
