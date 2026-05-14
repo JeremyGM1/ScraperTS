@@ -1,6 +1,7 @@
 
 import { Browser } from "playwright";
 import { getText } from "../../helpers/get_element";
+import { Login } from "./auth";
 
 interface Product {
   Referencia: string;
@@ -20,11 +21,8 @@ export async function run(
 
   try {
     await page.goto("https://tiendab2b.retrotrac.com/");
-    await page.click("a[ui-sref='home.login']");
-    await page.fill("input#email", userEmail);
-    await page.fill("input#password", userPassword);
-    await page.click("button[type='submit']");
-    await page.waitForLoadState("networkidle");
+    
+    await Login(page, userEmail, userPassword);    
 
     await page.waitForSelector("#globalSearchTextHome:not([disabled])", { state: "visible" });
     await page.fill("#globalSearchTextHome", refId);

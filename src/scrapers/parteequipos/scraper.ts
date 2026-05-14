@@ -3,15 +3,26 @@ import { Browser } from "playwright";
 import { getInventory } from "./inventory";
 import { login } from "./auth";
 import { IProduct } from "../../types/product";
+import { IsLoggedIn } from "./isLoggedIn";
+import fs from "fs";
 
 export async function run(browser: Browser, userEmail: string, userPassword: string, refId: string): Promise<IProduct[] | null> {
-  const context = await browser.newContext();
+  const sessionPath = "sessions/parteequipos.json";
+  const context = await browser.newContext({ storageState: fs.existsSync(sessionPath) ? sessionPath : undefined });
   const page = await context.newPage();
 
   try {
     await page.goto("https://tienda.partequipos.com/");
 
-    await login(page, userEmail, userPassword);
+    if (!(await IsLoggedIn(page))) {
+      console.log("[Parte Equipos] Not logged in, performing login...");
+
+      await login(page, userEmail, userPassword);
+
+      await context.storageState({ path: sessionPath });
+    }else{
+      console.log("[Parte Equipos] Already logged in, skipping login.");
+    }
 
     await page.goto(`https://tienda.partequipos.com/catalogsearch/result/?q=${refId}`);    
         
