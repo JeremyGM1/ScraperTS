@@ -1,4 +1,5 @@
 interface IProduct {
+  Referencia: string;
   Nombre: string;
   Marca: string;
   Precio: string;

@@ -3,7 +3,8 @@ import { Browser } from "playwright";
 import { getInventory } from "./inventory";
 import { login } from "./auth";
 import { IProduct } from "../../types/product";
-import { IsLoggedIn } from "./isLoggedIn";
+import { IsLogged } from "../../helpers/is_logged";
+import { extractReference } from "./extract_reference";
 import fs from "fs";
 
 export async function run(browser: Browser, userEmail: string, userPassword: string, refId: string): Promise<IProduct[] | null> {
@@ -14,15 +15,13 @@ export async function run(browser: Browser, userEmail: string, userPassword: str
   try {
     await page.goto("https://tienda.partequipos.com/");
 
-    if (!(await IsLoggedIn(page))) {
-      console.log("[Parte Equipos] Not logged in, performing login...");
-
-      await login(page, userEmail, userPassword);
-
-      await context.storageState({ path: sessionPath });
-    }else{
-      console.log("[Parte Equipos] Already logged in, skipping login.");
-    }
+    if (await IsLogged(page, "a.customer-login-link")) {
+          console.log("[Parte Equipos] Not logged in, performing login...");
+          await login(page, userEmail, userPassword);
+          await context.storageState({ path: sessionPath });      
+        }else{
+          console.log("[Parte Equipos] Already logged in, skipping login.");      
+        }
 
     await page.goto(`https://tienda.partequipos.com/catalogsearch/result/?q=${refId}`);    
         
@@ -47,6 +46,9 @@ export async function run(browser: Browser, userEmail: string, userPassword: str
 
       try {
         const name = await product.locator("a.product-item-link").innerText();
+        
+        let reference = "N/A";
+        reference = await extractReference(name);
 
         const brandLocator = product.locator("p.star-container__title");
 
@@ -66,7 +68,7 @@ export async function run(browser: Browser, userEmail: string, userPassword: str
 
         const inventory = await getInventory(page, i);
         
-        results.push({ Nombre: name, Marca: brand, Precio: price.replace("$", ""), Inventario: inventory });
+        results.push({ Referencia: reference, Nombre: name, Marca: brand, Precio: price.replace("$", ""), Inventario: inventory });
 
       } catch (err) {
         console.error(`[Parte Equipos] Error extracting product: ${i}:`,
