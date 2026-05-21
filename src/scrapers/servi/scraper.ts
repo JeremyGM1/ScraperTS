@@ -1,6 +1,6 @@
 import { Browser } from "playwright";
 import { login } from "./auth";
-import { IsLogged } from "../../helpers/is_logged";
+import { isNotFoundIframe } from "./is_not_found_iframe";
 import fs from "fs";
 
 interface Product {
@@ -22,22 +22,31 @@ export async function run(
 
   try {
     await page.goto("https://empresaservitractor.zohocreatorportal.com/");
-    await page.waitForLoadState("networkidle");    
+    await page.waitForLoadState("networkidle");
 
-    if (await IsLogged(page, "#login_id")) {
+    const loginIframeHandle = await page.$("iframe[src*='accounts']");
+
+    if (loginIframeHandle) {
       console.log("[Servitractor] Not logged in, performing login...");
-      await login(page, userEmail, userPassword);
-      await context.storageState({ path: sessionPath });      
+      const loginFrame = page.frameLocator("iframe[src*='accounts']");
+      await login(loginFrame, userEmail, userPassword);
+      await context.storageState({ path: sessionPath });
     }else{
-      console.log("[Servitractor] Already logged in, skipping login.");      
+      console.log("[Servitractor] Already logged in, skipping login.");
     }
-
-    await login(page, userEmail, userPassword);
 
     await page.waitForURL("**/#Page:Inicio**");
 
     await page.fill("#zc-Busqueda", refId);
     await page.locator("input[name='Buscar']").click();
+    
+    const appFrame = page.frameLocator("iframe[src*='app']");
+    if (await isNotFoundIframe(appFrame, "span[value='Sin resultados, refina la búsqueda']", "Sin resultados, refina la búsqueda")) {
+      console.log(`[Servitractor] Product ${refId} not found`);
+      return null;
+    }else{
+      console.log('product found');
+    }
 
     await page.waitForSelector("table.htCore tbody tr", { state: "visible" });
 

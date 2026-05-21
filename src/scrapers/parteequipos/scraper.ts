@@ -1,10 +1,10 @@
-
 import { Browser } from "playwright";
-import { getInventory } from "./inventory";
-import { login } from "./auth";
-import { IProduct } from "../../types/product";
-import { IsLogged } from "../../helpers/is_logged";
 import { extractReference } from "./extract_reference";
+import { getInventory } from "./inventory";
+import { IProduct } from "../../types/product";
+import { isLogged } from "../../helpers/is_logged";
+import { isNotFound } from "../../helpers/is_not_found";
+import { login } from "./auth";
 import fs from "fs";
 
 export async function run(browser: Browser, userEmail: string, userPassword: string, refId: string): Promise<IProduct[] | null> {
@@ -15,20 +15,19 @@ export async function run(browser: Browser, userEmail: string, userPassword: str
   try {
     await page.goto("https://tienda.partequipos.com/");
 
-    if (await IsLogged(page, "a.customer-login-link")) {
-      console.log("[Parte Equipos] Not logged in, performing login...");
-      await login(page, userEmail, userPassword);
-      await context.storageState({ path: sessionPath });      
-    }else{
-      console.log("[Parte Equipos] Already logged in, skipping login.");      
-    }
+    if (await isLogged(page, "a.customer-login-link")) {
+          console.log("[Parte Equipos] Not logged in, performing login...");
+          await login(page, userEmail, userPassword);
+          await context.storageState({ path: sessionPath });      
+        }else{
+          console.log("[Parte Equipos] Already logged in, skipping login.");      
+        }
 
-    await page.goto(`https://tienda.partequipos.com/catalogsearch/result/?q=${refId}`);    
-        
-    const notFound = page.locator("div.message.notice");
-    if (await notFound.isVisible().catch(() => false) && (await notFound.innerText()).includes("La búsqueda no ha devuelto ningún resultado.")) {
+    await page.goto(`https://tienda.partequipos.com/catalogsearch/result/?q=${refId}`);          
+
+    if (await isNotFound(page, "div.message.notice", "La búsqueda no ha devuelto ningún resultado.")) {
       console.log(`[Parte Equipos] Product ${refId} not found`);
-      return null;
+      return null;      
     }
 
     await page.waitForSelector("ol.product-items");    

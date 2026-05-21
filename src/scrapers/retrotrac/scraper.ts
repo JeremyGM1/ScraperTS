@@ -3,12 +3,17 @@ import { Browser } from "playwright";
 import { getText } from "../../helpers/get_element";
 import { login } from "./auth";
 import fs from "fs";
-import { IsLogged } from "../../helpers/is_logged";
+import { isLogged } from "../../helpers/is_logged";
 import { isNotFound } from "../../helpers/is_not_found";
 import { IProduct } from "../../types/product";
 
 
-export async function run(browser: Browser, userEmail: string, userPassword: string, refId: string): Promise<IProduct[] | null> {
+export async function run(
+  browser: Browser, 
+  userEmail: string, 
+  userPassword: string, 
+  refId: string
+): Promise<IProduct[] | null> {
   const sessionPath = "sessions/retrotrac.json";
   const context = await browser.newContext({ storageState: fs.existsSync(sessionPath) ? sessionPath : undefined });
   const page = await context.newPage();
@@ -16,7 +21,7 @@ export async function run(browser: Browser, userEmail: string, userPassword: str
   try {
     await page.goto("https://tiendab2b.retrotrac.com/");
     
-    if (await IsLogged(page, "a.item__link[href='#!/login']")) {
+    if (await isLogged(page, "a.item__link[href='#!/login']")) {
       console.log("[Retrotrac] Not logged in, performing login...");
       await login(page, userEmail, userPassword);
       await context.storageState({ path: sessionPath });      
@@ -35,7 +40,7 @@ export async function run(browser: Browser, userEmail: string, userPassword: str
 
     if (await isNotFound(page, "div.col-md-12.mb20 h4", "No se encontraron")) {
       console.log(`[Retrotrac] Product ${refId} not found`);
-      return null;      
+      return null;
     }
 
     await page.waitForSelector(".box-product", { state: "visible" });
