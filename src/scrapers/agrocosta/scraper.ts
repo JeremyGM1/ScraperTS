@@ -32,8 +32,7 @@ refId: string
 
         await page.waitForLoadState("networkidle");
 
-        const results: IAgrocostaProduct[] = [];
-        const importResults: IProduct[] = [];
+        const results: IAgrocostaProduct[] = [];                    
 
         if (await isNotFound(page, "div.alert.alert-danger", "No se encontraron resultados para la referencia")) {
             console.log(`[Agrocosta] Product ${refId} not found`);
@@ -41,20 +40,55 @@ refId: string
         }
 
         await page.waitForSelector("tbody tr", {state: "visible"});
-        const rows = await page.locator("tbody tr").all();
+        const tables = await page.locator("table").all();
 
-        for (const row of rows){
-            const cells = await row.locator("td").all();
-            if (cells.length < 7) continue;
+        for (const table of tables) {
+            // Build columnMap per table so each thead stays in sync with its tbody
+            const headers = await table.locator("thead tr th").all();
+            const columnMap: Record<string, number> = {};
+            for (let i = 0; i < headers.length; i++) {
+                const text = (await headers[i].innerText()).trim().toLocaleLowerCase().replace(/\s+/g, " ");
+                columnMap[text] = i;
+            }
 
-            results.push({
-                Referencia: (await cells[0].innerText()).trim(),
-                Nombre: (await cells[1].innerText()).trim(),
-                Barranquilla: (await cells[2].locator("div.stock-badge").innerText()).trim(),
-                Bogota: (await cells[3].innerText()).trim(),
-                Marca: (await cells[5].innerText()).trim(),
-                Precio: (await cells[6].innerText()).trim(),
-            });
+            const rows = await table.locator("tbody tr").all();
+
+            for (const row of rows) {
+                const cells = await row.locator("td").all();
+                if (cells.length < 4) continue;
+
+                const getCell = async (headerKey: string) => {
+                    const idx = columnMap[headerKey];
+                    if (idx === undefined || idx >= cells.length) return "";
+                    return (await cells[idx].innerText()).trim();
+                };
+
+                const barranquillaIdx = columnMap["bodega barranquilla"] ?? columnMap["disponible"];
+                let barranquilla = "";
+                if (barranquillaIdx !== undefined) {
+                    const stockBadge = cells[barranquillaIdx].locator("div.stock-badge");
+                    if (await stockBadge.count() > 0) {
+                        barranquilla = (await stockBadge.innerText()).trim();
+                    } else {
+                        barranquilla = (await cells[barranquillaIdx].evaluate(el =>
+                            Array.from(el.childNodes)
+                                .filter(n => n.nodeType === Node.TEXT_NODE)
+                                .map(n => n.textContent?.trim())
+                                .filter(Boolean)
+                                .join(" ")
+                        )).trim();
+                    }
+                }
+
+                results.push({
+                    Referencia: await getCell("referencia"),
+                    Nombre: await getCell("descripción"),
+                    Barranquilla: barranquilla,
+                    Bogota: await getCell("bodega bogotá"),
+                    Marca: await getCell("marca"),
+                    Precio: await getCell("precio antes de iva"),
+                });
+            }
         }
         
         return results;
