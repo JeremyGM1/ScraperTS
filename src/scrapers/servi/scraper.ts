@@ -1,4 +1,7 @@
 import { Browser } from "playwright";
+import { login } from "./auth";
+import { IsLogged } from "../../helpers/is_logged";
+import fs from "fs";
 
 interface Product {
   Referencia: string;
@@ -13,21 +16,23 @@ export async function run(
   userPassword: string,
   refId: string
 ): Promise<Product[] | null> {
-  const context = await browser.newContext();
+  const sessionPath = "sessions/servitractor.json";
+  const context = await browser.newContext({ storageState: fs.existsSync(sessionPath) ? sessionPath : undefined });    
   const page = await context.newPage();
 
   try {
     await page.goto("https://empresaservitractor.zohocreatorportal.com/");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("networkidle");    
 
-    const loginFrame = page.frameLocator("iframe[src*='accounts']");
+    if (await IsLogged(page, "#login_id")) {
+      console.log("[Servitractor] Not logged in, performing login...");
+      await login(page, userEmail, userPassword);
+      await context.storageState({ path: sessionPath });      
+    }else{
+      console.log("[Servitractor] Already logged in, skipping login.");      
+    }
 
-    await loginFrame.locator("#login_id").fill(userEmail);
-    await loginFrame.locator("#nextbtn").click();
-
-    await loginFrame.locator("input#password").waitFor({ state: "visible" });
-    await loginFrame.locator("input#password").fill(userPassword);
-    await loginFrame.locator("#nextbtn").click();
+    await login(page, userEmail, userPassword);
 
     await page.waitForURL("**/#Page:Inicio**");
 

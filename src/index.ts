@@ -45,13 +45,14 @@ async function main() {
       ]);
       */
 
-      const [retrotrac, partequipos] = await Promise.all([
-        runRetrotrac(browser, RETROTRAC_EMAIL!, RETROTRAC_PASSWORD!, ref_id),
-        runParteequipos(browser, PARTEEQUIPOS_EMAIL!, PARTEEQUIPOS_PASSWORD!, ref_id),        
+      const [servi] = await Promise.all([
+        //runRetrotrac(browser, RETROTRAC_EMAIL!, RETROTRAC_PASSWORD!, ref_id),
+        //runParteequipos(browser, PARTEEQUIPOS_EMAIL!, PARTEEQUIPOS_PASSWORD!, ref_id),   
+        runServi(browser, SERVI_EMAIL!, SERVI_PASSWORD!, ref_id),     
       ]);
 
       //return reply.send({ retrotrac, partequipos, servi });
-      return reply.send({ retrotrac, partequipos });
+      return reply.send({ servi });
     } finally {
       await browser.close();
     }

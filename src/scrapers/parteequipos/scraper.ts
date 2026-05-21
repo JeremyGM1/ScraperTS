@@ -16,12 +16,12 @@ export async function run(browser: Browser, userEmail: string, userPassword: str
     await page.goto("https://tienda.partequipos.com/");
 
     if (await IsLogged(page, "a.customer-login-link")) {
-          console.log("[Parte Equipos] Not logged in, performing login...");
-          await login(page, userEmail, userPassword);
-          await context.storageState({ path: sessionPath });      
-        }else{
-          console.log("[Parte Equipos] Already logged in, skipping login.");      
-        }
+      console.log("[Parte Equipos] Not logged in, performing login...");
+      await login(page, userEmail, userPassword);
+      await context.storageState({ path: sessionPath });      
+    }else{
+      console.log("[Parte Equipos] Already logged in, skipping login.");      
+    }
 
     await page.goto(`https://tienda.partequipos.com/catalogsearch/result/?q=${refId}`);    
         
