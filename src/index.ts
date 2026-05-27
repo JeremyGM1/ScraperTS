@@ -6,6 +6,7 @@ import { run as runRetrotrac } from "./scrapers/retrotrac/scraper";
 import { run as runParteequipos } from "./scrapers/parteequipos/scraper";
 import { run as runServi } from "./scrapers/servi/scraper";
 import { run as runAgrocosta } from "./scrapers/agrocosta/scraper";
+import { run as runCatekom } from "./scrapers/catekom/scraper";
 
 config();
 
@@ -17,7 +18,9 @@ const {
   SERVI_EMAIL,
   SERVI_PASSWORD,
   AGRO_EMAIL,
-  AGRO_PASSWORD
+  AGRO_PASSWORD,
+  CATEKOM_EMAIL,
+  CATEKOM_PASSWORD
 } = process.env;
 
 if (!RETROTRAC_EMAIL || !RETROTRAC_PASSWORD) {
@@ -39,24 +42,15 @@ async function main() {
 
     const browser = await chromium.launch({ headless: false });
 
-    try {      
-      /*
-      const [retrotrac, partequipos, servi] = await Promise.all([
+    try {    
+      const [retrotrac, parteequipos, agrocosta, catekom] = await Promise.all([
         runRetrotrac(browser, RETROTRAC_EMAIL!, RETROTRAC_PASSWORD!, ref_id),
         runParteequipos(browser, PARTEEQUIPOS_EMAIL!, PARTEEQUIPOS_PASSWORD!, ref_id),
-        runServi(browser, SERVI_EMAIL!, SERVI_PASSWORD!, ref_id),
-      ]);
-      */
-
-      const [agrocosta] = await Promise.all([
-        //runRetrotrac(browser, RETROTRAC_EMAIL!, RETROTRAC_PASSWORD!, ref_id),
-        //runParteequipos(browser, PARTEEQUIPOS_EMAIL!, PARTEEQUIPOS_PASSWORD!, ref_id),
-        //runServi(browser, SERVI_EMAIL!, SERVI_PASSWORD!, ref_id),
         runAgrocosta(browser, AGRO_EMAIL!, AGRO_PASSWORD!, ref_id),
+        runCatekom(browser, CATEKOM_EMAIL!, CATEKOM_PASSWORD!, ref_id),
       ]);
-
-      //return reply.send({ retrotrac, partequipos, servi });
-      return reply.send({ agrocosta });
+      
+      return reply.send({ retrotrac, parteequipos, agrocosta, catekom });
     } finally {
       await browser.close();
     }
