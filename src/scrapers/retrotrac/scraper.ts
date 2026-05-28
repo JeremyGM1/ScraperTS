@@ -39,7 +39,7 @@ export async function run(
 
     if (await isNotFound(page, "div.col-md-12.mb20 h4", "No se encontraron")) {
       console.log(`[Retrotrac] Product ${refId} not found`);
-      return null;
+      return [];
     }
 
     await page.waitForSelector(".box-product", { state: "visible" });
@@ -66,7 +66,7 @@ export async function run(
     return results;
   } catch (e) {
     console.error(`[Retrotrac] Unexpected error: ${e}`);
-    return null;
+    return [];
   } finally {
     await context.close();
   }

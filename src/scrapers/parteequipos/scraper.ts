@@ -27,7 +27,7 @@ export async function run(browser: Browser, userEmail: string, userPassword: str
 
     if (await isNotFound(page, "div.message.notice", "La búsqueda no ha devuelto ningún resultado.")) {
       console.log(`[Parte Equipos] Product ${refId} not found`);
-      return null;      
+      return [];      
     }
 
     await page.waitForSelector("ol.product-items");    
@@ -79,6 +79,8 @@ export async function run(browser: Browser, userEmail: string, userPassword: str
     return results;
   } catch (err) {
     console.error(`[Parte Equipos] Unexpected error: ${err}`);
-    return null;
+    return [];
+  }finally {
+    await context.close();
   }
 }
