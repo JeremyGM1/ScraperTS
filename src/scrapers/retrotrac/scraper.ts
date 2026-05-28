@@ -1,11 +1,10 @@
-
 import { Browser } from "playwright";
 import { getText } from "../../helpers/get_element";
-import { login } from "./auth";
-import fs from "fs";
+import { IProduct } from "../../types/product";
 import { isLogged } from "../../helpers/is_logged";
 import { isNotFound } from "../../helpers/is_not_found";
-import { IProduct } from "../../types/product";
+import { login } from "./auth";
+import fs from "fs";
 
 
 export async function run(

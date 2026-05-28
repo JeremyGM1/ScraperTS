@@ -1,8 +1,9 @@
-import { ICatekomProduct } from "../../types/catekom_product";
 import { Browser } from "playwright";
-import fs from "fs";
+import { ICatekomProduct } from "../../types/catekom_product";
 import { isLogged } from "../../helpers/is_logged";
 import { isNotFound } from "../../helpers/is_not_found";
+import { login } from "./auth";
+import fs from "fs";
 
 export async function run(
   browser: Browser,
@@ -19,10 +20,7 @@ export async function run(
 
       if (await isLogged(page, "div.Title:has-text('Login')")) {
         console.log("[Catekom] Not logged in, performing login...");
-        await page.fill("input[name='ctl00$PageContentPlaceHolder$Login1$Login1$UserName']", username);
-        await page.fill("input[name='ctl00$PageContentPlaceHolder$Login1$Login1$Password']", password);
-        await page.click("input[name='ctl00$PageContentPlaceHolder$Login1$Login1$LoginButton']");
-
+        await login(page, username, password);
         await context.storageState({path: sessionPath})
       }else{
         console.log("[Catekom] Already logged in, skipping login.");

@@ -1,6 +1,5 @@
 import { Browser } from "playwright";
 import { IAgrocostaProduct } from "../../types/agrocosta_product";
-import { IProduct } from "../../types/product";
 import { isLogged } from "../../helpers/is_logged";
 import { isNotFound } from "../../helpers/is_not_found";
 import { login } from "./auth";

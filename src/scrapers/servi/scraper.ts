@@ -1,6 +1,6 @@
 import { Browser } from "playwright";
-import { login } from "./auth";
 import { isNotFoundIframe } from "./is_not_found_iframe";
+import { login } from "./auth";
 import fs from "fs";
 
 interface Product {
