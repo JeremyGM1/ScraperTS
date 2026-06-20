@@ -19,11 +19,8 @@ export async function run(
       await page.goto("http://179.33.191.211:8090/");
 
       if (await isLogged(page, "div.Title:has-text('Login')")) {
-        console.log("[Catekom] Not logged in, performing login...");
         await login(page, username, password);
         await context.storageState({path: sessionPath})
-      }else{
-        console.log("[Catekom] Already logged in, skipping login.");
       }
 
       await page.goto("http://179.33.191.211:8090/Pages/CLIENTES.aspx");
@@ -32,10 +29,7 @@ export async function run(
 
       await page.waitForLoadState("networkidle");
 
-      if (await isNotFound(page, "tr.Row.NoRecords td.Cell", "No se han encontrado.")) {
-        console.log(`[Catekom] Product ${refId} not found`);
-        return [];
-      }
+      if (await isNotFound(page, "tr.Row.NoRecords td.Cell", "No se han encontrado.")) return [];
       
       const rows = await page.locator("[id^='ctl00_PageContentPlaceHolder_view1Extender_Row']").all();
 

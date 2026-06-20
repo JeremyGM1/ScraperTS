@@ -15,18 +15,14 @@ export async function run(browser: Browser, userEmail: string, userPassword: str
   try {
     await page.goto("https://tienda.partequipos.com/");
 
-    if (await isLogged(page, "a.customer-login-link")) {
-          console.log("[Parte Equipos] Not logged in, performing login...");
-          await login(page, userEmail, userPassword);
-          await context.storageState({ path: sessionPath });      
-        }else{
-          console.log("[Parte Equipos] Already logged in, skipping login.");      
-        }
+    if (await isLogged(page, "a.customer-login-link")){  
+      await login(page, userEmail, userPassword);
+      await context.storageState({ path: sessionPath });
+    }
 
     await page.goto(`https://tienda.partequipos.com/catalogsearch/result/?q=${refId}`);          
 
-    if (await isNotFound(page, "div.message.notice", "La búsqueda no ha devuelto ningún resultado.")) {
-      console.log(`[Parte Equipos] Product ${refId} not found`);
+    if (await isNotFound(page, "div.message.notice", "La búsqueda no ha devuelto ningún resultado.")) {      
       return [];      
     }
 
@@ -35,8 +31,6 @@ export async function run(browser: Browser, userEmail: string, userPassword: str
     const products = page.locator("ol.product-items > li.product-item");
 
     const count = await products.count();
-
-    console.log(`[Parte Equipos] Found ${count} products`);
 
     const results: IProduct[] = [];
 

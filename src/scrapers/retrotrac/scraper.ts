@@ -1,5 +1,5 @@
 import { Browser } from "playwright";
-import { extractRetrotracProduct, getInventory } from "./inventory";
+import { getInventory } from "./inventory";
 import { IProduct } from "../../types/product";
 import { isLogged } from "../../helpers/is_logged";
 import { isNotFound } from "../../helpers/is_not_found";
@@ -28,24 +28,15 @@ export async function run(
     await page.fill("#globalSearchTextHome", refId);
 
     await Promise.all([
-      page.waitForURL(`**/${refId}**`, {timeout: 1000}),
-      page.click("button.header__form__btn:not([disabled])")
-    ])    
-
-    await page.waitForLoadState("networkidle");
+      page.click("button.header__form__btn:not([disabled])"),
+      page.waitForURL(`**/${refId}**`, {timeout: 10000})
+    ]);
 
     if (await isNotFound(page, "div.col-md-12.mb20 h4", "No se encontraron")) return [];
 
     await page.waitForSelector(".box-product", { state: "visible" });
-    const products = await page.$$(".box-product");    
 
-    const results: IProduct[] = [];
-    for (const product of products) {
-      const item = await extractRetrotracProduct(product);
-      if (item) results.push(item);      
-    }
-
-    await page.waitForTimeout(5000);
+    const results = await getInventory(page);
 
     return results;
   } catch (e) {

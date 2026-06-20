@@ -43,14 +43,14 @@ async function main() {
     const browser = await chromium.launch({ headless: false });
 
     try {    
-      const [retrotrac, parteequipos, agrocosta, catekom] = await Promise.all([
-        runRetrotrac(browser, RETROTRAC_EMAIL!, RETROTRAC_PASSWORD!, ref_id),
+      const [parteequipos, retrotrac,  agrocosta, catekom] = await Promise.all([
         runParteequipos(browser, PARTEEQUIPOS_EMAIL!, PARTEEQUIPOS_PASSWORD!, ref_id),
+        runRetrotrac(browser, RETROTRAC_EMAIL!, RETROTRAC_PASSWORD!, ref_id),
         runAgrocosta(browser, AGRO_EMAIL!, AGRO_PASSWORD!, ref_id),
         runCatekom(browser, CATEKOM_EMAIL!, CATEKOM_PASSWORD!, ref_id),
       ]);
       
-      return reply.send({ retrotrac, parteequipos, agrocosta, catekom });
+      return reply.send({ parteequipos, retrotrac, agrocosta, catekom });
     } finally {
       await browser.close();
     }

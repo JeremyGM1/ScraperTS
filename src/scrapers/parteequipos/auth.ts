@@ -6,5 +6,5 @@ export async function login(page: Page, email: string, password: string){
     await page.fill("input#email-login", email);
     await page.fill("input#pass-login", password);
     await page.click("#send2-login");
-    await page.waitForLoadState("networkidle");
+    await page.waitForSelector("a.customer-login-link", { state: "hidden" });
 }
