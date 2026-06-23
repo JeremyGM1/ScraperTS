@@ -1,8 +1,7 @@
 import { Browser } from "playwright";
 import { getInventory } from "./inventory";
 import { IProduct } from "../../types/product";
-import { isLogged } from "../../helpers/is_logged";
-import { isNotFound } from "../../helpers/is_not_found";
+import { isLoginPageVisible } from "../../helpers/is_logged";
 import { login } from "./auth";
 import fs from "fs";
 
@@ -19,26 +18,58 @@ export async function run(
   try {
     await page.goto("https://tiendab2b.retrotrac.com/");
     
-    if (await isLogged(page, "a.item__link[href='#!/login']")) {
+    if (await isLoginPageVisible(page, "a.item__link[href='#!/login']")) {
       await login(page, userEmail, userPassword);
+      
+      if(await isLoginPageVisible(page, "a.item__link[href='#!/login']")){
+        throw new Error("[Retrotrac] Login failed, check credentials");
+      }
+      
       await context.storageState({ path: sessionPath });
     }
 
-    await page.waitForSelector("#globalSearchTextHome:not([disabled])", { state: "visible" });
-    await page.fill("#globalSearchTextHome", refId);
+    const userId = await page.evaluate(() => {
+      const raw = localStorage.getItem("currentUser");
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return parsed?.userId || null;
+    });
 
-    await Promise.all([
-      page.click("button.header__form__btn:not([disabled])"),
-      page.waitForURL(`**/${refId}**`, {timeout: 10000})
-    ]);
+    if(!userId) {
+      console.error("[Retrotrac] Could not resolve userId from localStorage");
+      return[];
+    }
 
-    if (await isNotFound(page, "div.col-md-12.mb20 h4", "No se encontraron")) return [];
+    const response = await page.request.post("https://admin.retrotrac.com/backend/admin/frontend/web/index.php/categoria-info/show-items-by-cattegory",
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          id: null,
+          slug: null,
+          pageSize: 12,
+          searchText: refId,
+          internSearchText: "",
+          userId,
+          slugPromition: null,
+          filters: {
+            pageNumber: 1,
+            productHighPrice: null,
+            productLowPrice: null,
+            sort: 1,
+          },
+        },
+    });
 
-    await page.waitForSelector(".box-product", { state: "visible" });
+    if (!response.ok()) {
+      console.error(`[Retrotrac] Search request failed with status ${response.status()} ${response.statusText()}`);
+      return [];
+    }
 
-    const results = await getInventory(page);
-
-    return results;
+    const json = await response.json();       
+    const result = getInventory(json.items ?? []);    
+    return result;
   } catch (e) {
     console.error(`[Retrotrac] Unexpected error: ${e}`);
     return [];
