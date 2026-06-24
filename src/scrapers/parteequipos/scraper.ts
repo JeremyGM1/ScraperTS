@@ -2,7 +2,7 @@ import { Browser } from "playwright";
 import { extractReference } from "./extract_reference";
 import { getInventory } from "./inventory";
 import { IProduct } from "../../types/product";
-import { isLogged } from "../../helpers/is_logged";
+import { isLoginPageVisible } from "../../helpers/is_logged";
 import { isNotFound } from "../../helpers/is_not_found";
 import { login } from "./auth";
 import fs from "fs";
@@ -15,7 +15,7 @@ export async function run(browser: Browser, userEmail: string, userPassword: str
   try {
     await page.goto("https://tienda.partequipos.com/");
 
-    if (await isLogged(page, "a.customer-login-link")){  
+    if (await isLoginPageVisible(page, "a.customer-login-link")){  
       await login(page, userEmail, userPassword);
       await context.storageState({ path: sessionPath });
     }

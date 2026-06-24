@@ -44,9 +44,9 @@ async function main() {
 
     try {    
       const [retrotrac/*, parteequipos, agrocosta, catekom*/] = await Promise.all([
-        runRetrotrac(browser, RETROTRAC_EMAIL!, RETROTRAC_PASSWORD!, ref_id),
-        /*runParteequipos(browser, PARTEEQUIPOS_EMAIL!, PARTEEQUIPOS_PASSWORD!, ref_id),
-        runAgrocosta(browser, AGRO_EMAIL!, AGRO_PASSWORD!, ref_id),
+        //runRetrotrac(browser, RETROTRAC_EMAIL!, RETROTRAC_PASSWORD!, ref_id),
+        runParteequipos(browser, PARTEEQUIPOS_EMAIL!, PARTEEQUIPOS_PASSWORD!, ref_id),
+        /*runAgrocosta(browser, AGRO_EMAIL!, AGRO_PASSWORD!, ref_id),
         runCatekom(browser, CATEKOM_EMAIL!, CATEKOM_PASSWORD!, ref_id),*/
       ]);
       
