@@ -1,6 +1,7 @@
 import { APIResponse, Browser, BrowserContext, Page } from "playwright";
 import { IProduct } from "../../types/product";
 import { getUserIdFromSession } from "./auth";
+import { config } from "./config";
 
 interface RetrotracApiItem {
   reference: string;
@@ -13,7 +14,7 @@ export async function searchProduct(
   context: BrowserContext,
   refId: string
 ): Promise<APIResponse | null> {
-  const userId = getUserIdFromSession("sessions/retrotrac.json");
+  const userId = getUserIdFromSession(config.sessionPath);
 
   if (!userId) {
     console.error("[Retrotrac] Could not resolve from userId from session");
@@ -21,7 +22,7 @@ export async function searchProduct(
   }
 
   try {
-    return await context.request.post("https://admin.retrotrac.com/backend/admin/frontend/web/index.php/categoria-info/show-items-by-cattegory",
+    return await context.request.post(config.searchURL,
       {
         headers: {
           "Content-Type": "application/json",

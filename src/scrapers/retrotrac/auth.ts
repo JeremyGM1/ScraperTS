@@ -1,6 +1,7 @@
 import { Page, BrowserContext } from "playwright";
 import fs from "fs";
 import { isLoginPageVisible } from "../../helpers/is_logged"
+import { config } from "./config";
 
 export async function performLogin(
   context: BrowserContext,
@@ -11,7 +12,7 @@ export async function performLogin(
   const page = await context.newPage();
 
   try{
-    await page.goto("https://tiendab2b.retrotrac.com/");
+    await page.goto(config.baseURL);
     
     await page.click("a.item__link[href='#!/login']");
     await page.fill("input#email", userEmail);

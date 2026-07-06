@@ -2,6 +2,7 @@ import { Browser } from "playwright";
 import { getInventory, searchProduct } from "./inventory";
 import { IProduct } from "../../types/product";
 import { performLogin } from "./auth";
+import { config } from "./config";
 import fs from "fs";
 
 export async function run(
@@ -10,7 +11,7 @@ export async function run(
   userPassword: string, 
   refId: string
 ): Promise<IProduct[] | null> {
-  const sessionPath = "sessions/retrotrac.json";
+  const sessionPath = config.sessionPath;
   const context = await browser.newContext({ storageState: fs.existsSync(sessionPath) ? sessionPath : undefined });
 
   try {
@@ -19,7 +20,7 @@ export async function run(
     if (!response) {
       await performLogin(context, sessionPath, userEmail, userPassword);
       response = await searchProduct(context, refId);
-    }    
+    }
 
     if (response && (response.status() === 401 || response.status() === 403)) {
       await performLogin(context, sessionPath, userEmail, userPassword);

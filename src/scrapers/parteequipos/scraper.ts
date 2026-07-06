@@ -1,80 +1,94 @@
-import { Browser } from "playwright";
-import { extractReference } from "./extract_reference";
-import { getInventory } from "./inventory";
-import { IProduct } from "../../types/product";
-import { isLoginPageVisible } from "../../helpers/is_logged";
-import { isNotFound } from "../../helpers/is_not_found";
-import { login } from "./auth";
+import { Browser, Page } from "playwright";
+import { searchProduct, getPriceFromPage, getInventory } from "./inventory";
+import { IParteequiposProduct } from "../../types/parteequipos_product";
+import { performLogin } from "./auth";
+import { config } from "./config";
 import fs from "fs";
 
-export async function run(browser: Browser, userEmail: string, userPassword: string, refId: string): Promise<IProduct[] | null> {
-  const sessionPath = "sessions/parteequipos.json";
-  const context = await browser.newContext({ storageState: fs.existsSync(sessionPath) ? sessionPath : undefined });
+async function isSessionValid(context: import("playwright").BrowserContext): Promise<boolean> {
   const page = await context.newPage();
+  try {
+    await page.goto(config.baseURL, {
+      waitUntil: "networkidle",
+    });
+
+    const isLoginVisible = await page.isVisible("a.customer-login-link");
+    return !isLoginVisible;
+  } catch (err) {
+    console.error("[Parte Equipos] Session validation failed:", err);
+    return false;
+  } finally {
+    await page.close();
+  }
+}
+
+export async function run(
+  browser: Browser,
+  userEmail: string,
+  userPassword: string,
+  refId: string
+): Promise<IParteequiposProduct[] | null> {
+  const sessionPath = config.sessionPath;
+  const context = await browser.newContext({
+    storageState: fs.existsSync(sessionPath) ? sessionPath : undefined,
+  });
+
+  let page: Page | null = null;
 
   try {
-    await page.goto("https://tienda.partequipos.com/");
-
-    if (await isLoginPageVisible(page, "a.customer-login-link")){  
-      await login(page, userEmail, userPassword);
-      await context.storageState({ path: sessionPath });
+    if (!fs.existsSync(sessionPath) || !(await isSessionValid(context))) {
+      await performLogin(context, sessionPath, userEmail, userPassword);
     }
 
-    await page.goto(`https://tienda.partequipos.com/catalogsearch/result/?q=${refId}`);          
+    const graphResponse = await searchProduct(context, refId);
+    const graphJson = await graphResponse.json();
+    const items: any[] = graphJson.data?.products?.items ?? [];
 
-    if (await isNotFound(page, "div.message.notice", "La búsqueda no ha devuelto ningún resultado.")) {      
-      return [];      
-    }
+    if (!items.length) return [];
 
-    await page.waitForSelector("ol.product-items");    
-    
-    const products = page.locator("ol.product-items > li.product-item");
+    page = await context.newPage();
 
-    const count = await products.count();
+    await page.goto(
+      `${config.searchURL}?q=${refId}`,
+      { waitUntil: "networkidle" }
+    );
 
-    const results: IProduct[] = [];
+    const results: IParteequiposProduct[] = await Promise.all(
+      items.map(async (item: any) => {
+        const selector = `#product-price-${item.id}`;
+        const price = await page!.$eval(selector, el => el.getAttribute("data-price-amount")).catch(() => null);
 
-    for (let i = 0; i < count; i++) {
-      const product = products.nth(i);
+        const inventory = await getInventory(context, item.id);
 
-      try {
-        const name = await product.locator("a.product-item-link").innerText();
-        
-        let reference = "N/A";
-        reference = await extractReference(name);
+        const rawSku: string = (item.sku || "").trim();
+        const skuParts = rawSku.split("-");
+        const referencia = skuParts[0] || rawSku;
 
-        const brandLocator = product.locator("p.star-container__title");
+        let marca = skuParts.slice(1).join("-") || "";
+        if (marca.startsWith("A") && marca.length > 1) {
+          marca = marca.slice(1);
+        }
 
-        const brand = (await brandLocator.count()) > 0 ? (await brandLocator.innerText()).trim() : "N/A";
+        const rawName: string = (item.name || "").trim();
+        const nombre = rawName.replace(/\s+\d+$/u, "").trim();
 
-        let price = "N/A";
-
-        const priceLocator = product.locator("span.price-wrapper span.price");
-        
-        if (await priceLocator.count() > 0)
-          price = (await priceLocator.first().innerText()).replace("$", "").trim();
-
-        const cookieButton = page.locator("#btn-cookie-allow");
-
-        if (await cookieButton.isVisible().catch(() => false))
-          await cookieButton.click();
-
-        const inventory = await getInventory(page, i);
-        
-        results.push({ Referencia: reference, Nombre: name, Marca: brand, Precio: price.replace("$", ""), Inventario: inventory });
-
-      } catch (err) {
-        console.error(`[Parte Equipos] Error extracting product: ${i}:`,
-          err
-        );
-      }
-    }
+        return {
+          Referencia: referencia,
+          Nombre: nombre,
+          Marca: marca,
+          Precio: price ?? "0",
+          Inventario: inventory.total,
+          Monterrey: inventory.monterrey,
+        };
+      })
+    );
 
     return results;
   } catch (err) {
-    console.error(`[Parte Equipos] Unexpected error: ${err}`);
+    console.error(`[Parte Equipos] Unexpected error:`, err);
     return [];
-  }finally {
+  } finally {
+    await page?.close();
     await context.close();
   }
 }

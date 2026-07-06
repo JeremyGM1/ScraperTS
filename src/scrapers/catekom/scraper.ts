@@ -1,6 +1,6 @@
 import { Browser } from "playwright";
 import { ICatekomProduct } from "../../types/catekom_product";
-import { isLogged } from "../../helpers/is_logged";
+import { isLoginPageVisible } from "../../helpers/is_logged";
 import { isNotFound } from "../../helpers/is_not_found";
 import { login } from "./auth";
 import fs from "fs";
@@ -18,7 +18,7 @@ export async function run(
     try{
       await page.goto("http://179.33.191.211:8090/");
 
-      if (await isLogged(page, "div.Title:has-text('Login')")) {
+      if (await isLoginPageVisible(page, "div.Title:has-text('Login')")) {
         await login(page, username, password);
         await context.storageState({path: sessionPath})
       }
