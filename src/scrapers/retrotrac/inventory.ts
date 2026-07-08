@@ -50,11 +50,16 @@ export async function searchProduct(
 }
 
 export function getInventory(items: RetrotracApiItem[]): IProduct[] {
-  return items.map(item => ({
-    Referencia: item.reference,
-    Nombre: item.name,
-    Marca  : "",
-    Precio : item.currentPrice,
-    Inventario: item.available,
-  }));
+  return items.map(item => {
+    const marca = item.reference.slice(0, 3);
+    const referencia = item.reference.slice(3);
+    const precio = parseFloat(item.currentPrice).toString();
+    return {
+      Referencia: referencia,
+      Nombre: item.name,
+      Marca  : marca,
+      Precio : precio,
+      Inventario: item.available,
+    }
+  });
 }
