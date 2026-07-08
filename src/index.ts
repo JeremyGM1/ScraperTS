@@ -11,6 +11,20 @@ import Fastify from "fastify";
 
 config();
 
+type SearchBody = {
+  ref_id?: string;
+  refId?: string;
+  ref_ids?: string[] | string;
+  refIds?: string[] | string;
+  refs?: string[] | string;
+  references?: string[] | string;
+  reference?: string;
+  scrapers?: string[] | string;
+  scraperNames?: string[] | string;
+  selectedScrapers?: string[] | string;
+  scraper?: string[] | string;
+};
+
 const {
   RETROTRAC_EMAIL,
   RETROTRAC_PASSWORD,
@@ -29,16 +43,26 @@ if (!RETROTRAC_EMAIL || !RETROTRAC_PASSWORD) {
   process.exit(1);
 }
 
-
-
 async function main() {
   const app = Fastify({ logger: true });
   await app.register(cors);
 
-  app.post<{ Body: { ref_id?: string; ref_ids?: string[] | string; refs?: string[] | string; scrapers?: string[] | string } }>('/search', async (req, reply) => {
-    const { ref_id, ref_ids, refs, scrapers } = req.body;
-    const refsToSearch = normalizeRefs(ref_id ?? ref_ids ?? refs);
-    const selectedScrapers = normalizeRefs(scrapers);
+  app.post<{ Body: SearchBody }>('/search', async (req, reply) => {
+    const refsToSearch = normalizeRefs({
+      ref_id: req.body.ref_id,
+      refId: req.body.refId,
+      ref_ids: req.body.ref_ids,
+      refIds: req.body.refIds,
+      refs: req.body.refs,
+      references: req.body.references,
+      reference: req.body.reference,
+    });
+    const selectedScrapers = normalizeRefs({
+      scrapers: req.body.scrapers,
+      scraperNames: req.body.scraperNames,
+      selectedScrapers: req.body.selectedScrapers,
+      scraper: req.body.scraper,
+    });
 
     if (refsToSearch.length === 0) {
       return reply.status(400).send({ error: 'At least one reference is required' });
@@ -95,65 +119,6 @@ async function main() {
             ...Object.fromEntries(
               selectedScrapers.map((scraperName, index) => [scraperName.toLowerCase(), scraperResults[index]])
             ),
-          };
-        })
-      );
-
-      return reply.send({ results });
-    } finally {
-      await browser.close();
-    }
-  });
-
-  app.post<{ Body: { refs?: string[] | string; scrapers?: string[] | string } }>('/search/batch', async (req, reply) => {
-    const { refs, scrapers } = req.body;
-    const refsToSearch = normalizeRefs(refs);
-    const selectedScrapers = normalizeRefs(scrapers);
-
-    if (refsToSearch.length === 0) {
-      return reply.status(400).send({ error: 'At least one reference is required' });
-    }
-
-    if (selectedScrapers.length === 0) {
-      return reply.status(400).send({ error: 'At least one scraper must be selected' });
-    }
-
-    const browser = await chromium.launch({ headless: false });
-
-    try {
-      const results = await Promise.all(
-        refsToSearch.map(async (reference) => {
-          const scraperResults = await Promise.all(
-            selectedScrapers.map(async (scraperName) => {
-              const normalized = scraperName.toLowerCase();
-
-              if (normalized === 'retrotrac') {
-                return { name: 'retrotrac', value: await runRetrotrac(browser, RETROTRAC_EMAIL!, RETROTRAC_PASSWORD!, reference) };
-              }
-
-              if (normalized === 'parteequipos') {
-                return { name: 'parteequipos', value: await runParteequipos(browser, PARTEEQUIPOS_EMAIL!, PARTEEQUIPOS_PASSWORD!, reference) };
-              }
-
-              if (normalized === 'servi') {
-                return { name: 'servi', value: await runServi(browser, SERVI_EMAIL!, SERVI_PASSWORD!, reference) };
-              }
-
-              if (normalized === 'agrocosta') {
-                return { name: 'agrocosta', value: await runAgrocosta(browser, AGRO_EMAIL!, AGRO_PASSWORD!, reference) };
-              }
-
-              if (normalized === 'catekom') {
-                return { name: 'catekom', value: await runCatekom(browser, CATEKOM_EMAIL!, CATEKOM_PASSWORD!, reference) };
-              }
-
-              return { name: normalized, value: null };
-            })
-          );
-
-          return {
-            reference,
-            ...Object.fromEntries(scraperResults.map((entry) => [entry.name, entry.value])),
           };
         })
       );

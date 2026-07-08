@@ -1,5 +1,6 @@
 import { BrowserContext, Page } from "playwright";
 import { isLoginPageVisible } from "../../helpers/is_logged";
+import { config } from "./config";
 
 export async function performLogin(
   context: BrowserContext,
@@ -37,6 +38,23 @@ export async function performLogin(
     }
 
     await context.storageState({ path: sessionPath });
+  } finally {
+    await page.close();
+  }
+}
+
+export async function isSessionValid(context: import("playwright").BrowserContext): Promise<boolean> {
+  const page = await context.newPage();
+  try {
+    await page.goto(config.baseURL, {
+      waitUntil: "networkidle",
+    });
+
+    const isLoginVisible = await page.isVisible("a.customer-login-link");
+    return !isLoginVisible;
+  } catch (err) {
+    console.error("[Parte Equipos] Session validation failed:", err);
+    return false;
   } finally {
     await page.close();
   }

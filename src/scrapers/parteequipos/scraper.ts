@@ -1,26 +1,9 @@
 import { Browser, Page } from "playwright";
-import { searchProduct, getPriceFromPage, getInventory } from "./inventory";
-import { IParteequiposProduct } from "../../types/parteequipos_product";
-import { performLogin } from "./auth";
 import { config } from "./config";
+import { IParteequiposProduct } from "../../types/parteequipos_product";
+import { performLogin, isSessionValid } from "./auth";
+import { searchProduct, getPriceFromPage, getInventory } from "./inventory";
 import fs from "fs";
-
-async function isSessionValid(context: import("playwright").BrowserContext): Promise<boolean> {
-  const page = await context.newPage();
-  try {
-    await page.goto(config.baseURL, {
-      waitUntil: "networkidle",
-    });
-
-    const isLoginVisible = await page.isVisible("a.customer-login-link");
-    return !isLoginVisible;
-  } catch (err) {
-    console.error("[Parte Equipos] Session validation failed:", err);
-    return false;
-  } finally {
-    await page.close();
-  }
-}
 
 export async function run(
   browser: Browser,
@@ -49,7 +32,7 @@ export async function run(
     page = await context.newPage();
 
     await page.goto(
-      `${config.searchURL}?q=${refId}`,
+      `${config.searchURL}${refId}`,
       { waitUntil: "networkidle" }
     );
 
