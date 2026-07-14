@@ -1,8 +1,9 @@
 import { Browser } from "playwright";
-import { getInventory, searchProduct } from "./inventory";
+import { searchProduct } from "./inventory";
 import { IProduct } from "../../types/product";
 import { performLogin } from "./auth";
 import { config } from "./config";
+import { mapRetrotracItemsToProducts } from "./mappers"
 import fs from "fs";
 
 export async function run(
@@ -39,7 +40,7 @@ export async function run(
 
     console.log(refId, json);
 
-    const result = getInventory(json.items ?? []);
+    const result = mapRetrotracItemsToProducts(json.items ?? []);
     return result;
   } catch (e) {
     console.error(`[Retrotrac] Unexpected error: ${e}`);
