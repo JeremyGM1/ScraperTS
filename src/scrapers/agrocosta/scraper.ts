@@ -1,9 +1,9 @@
-import fs from "fs";
 import { Browser } from "playwright";
-import { IAgrocostaProduct } from "../../types/agrocosta_product";
-import { ensureSession } from "./auth";
-import { isNotFoundHtml, parseProducts, queryViaHttp } from "./inventory";
 import { config } from "./config";
+import { ensureSession } from "./auth";
+import { IAgrocostaProduct } from "../../types/agrocosta_product";
+import { isNotFoundHtml, parseProducts, queryViaHttp } from "./inventory";
+import fs from "fs";
 
 export async function run(
     browser: Browser,

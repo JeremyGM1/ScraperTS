@@ -1,5 +1,5 @@
 import { chromium } from "playwright";
-import { config } from "dotenv";
+import { config as envConfig } from "./helpers/env";
 import { normalizeRefs } from "./helpers/normalize_refs";
 import { run as runAgrocosta } from "./scrapers/agrocosta/scraper";
 import { run as runCatekom } from "./scrapers/catekom/scraper";
@@ -9,60 +9,31 @@ import { run as runServi } from "./scrapers/servi/scraper";
 import cors from "@fastify/cors";
 import Fastify from "fastify";
 
-config();
-
 type SearchBody = {
-  ref_id?: string;
-  refId?: string;
-  ref_ids?: string[] | string;
-  refIds?: string[] | string;
-  refs?: string[] | string;
-  references?: string[] | string;
-  reference?: string;
-  scrapers?: string[] | string;
-  scraperNames?: string[] | string;
-  selectedScrapers?: string[] | string;
-  scraper?: string[] | string;
+  references?: string[];
+  scrapers?: string[];
 };
 
-const {
-  RETROTRAC_EMAIL,
-  RETROTRAC_PASSWORD,
-  PARTEEQUIPOS_EMAIL,
-  PARTEEQUIPOS_PASSWORD,
-  SERVI_EMAIL,
-  SERVI_PASSWORD,
-  AGRO_EMAIL,
-  AGRO_PASSWORD,
-  CATEKOM_EMAIL,
-  CATEKOM_PASSWORD
-} = process.env;
-
-if (!RETROTRAC_EMAIL || !RETROTRAC_PASSWORD) {
-  console.error("Error: RETROTRAC_EMAIL and RETROTRAC_PASSWORD must be set in the .env file.");
-  process.exit(1);
-}
-
 async function main() {
-  const app = Fastify({ logger: true });
+  const browser = await chromium.launch({ headless: process.env.HEADLESS !== "false" });
+  const app = Fastify({
+    logger: {
+      level: process.env.LOG_LEVEL || 'info',
+      transport: process.env.NODE_ENV !== 'production'
+        ? { target: 'pino-pretty', options: { colorize: true } }
+        : undefined,
+    },
+  });
+
+  app.addHook("onClose", async () => {
+    await browser.close();
+  });
+
   await app.register(cors);
 
   app.post<{ Body: SearchBody }>('/search', async (req, reply) => {
-    const refsToSearch = normalizeRefs({
-      ref_id: req.body.ref_id,
-      refId: req.body.refId,
-      ref_ids: req.body.ref_ids,
-      refIds: req.body.refIds,
-      refs: req.body.refs,
-      references: req.body.references,
-      reference: req.body.reference,
-    });
-    const selectedScrapers = normalizeRefs({
-      scrapers: req.body.scrapers,
-      scraperNames: req.body.scraperNames,
-      selectedScrapers: req.body.selectedScrapers,
-      scraper: req.body.scraper,
-    });
+    const refsToSearch = normalizeRefs(req.body.references);
+    const selectedScrapers = normalizeRefs(req.body.scrapers);
 
     if (refsToSearch.length === 0) {
       return reply.status(400).send({ error: 'At least one reference is required' });
@@ -72,64 +43,68 @@ async function main() {
       return reply.status(400).send({ error: 'At least one scraper must be selected' });
     }
 
-    const browser = await chromium.launch({ headless: false });
-
     try {
-      const scraperRuns = selectedScrapers.map((scraperName) => {
-        const normalized = scraperName.toLowerCase();
+      const scraperMap: Record<string, (ref: string) => Promise<any>> = {
+        retrotrac: (ref) => runRetrotrac(browser, envConfig.retrotrac.email, envConfig.retrotrac.password, ref),
+        parteequipos: (ref) => runParteequipos(browser, envConfig.parteequipos.email, envConfig.parteequipos.password, ref),
+        servi: (ref) => runServi(browser, envConfig.servi.email, envConfig.servi.password, ref),
+        agrocosta: (ref) => runAgrocosta(browser, envConfig.agrocosta.email, envConfig.agrocosta.password, ref),
+        catekom: (ref) => runCatekom(browser, envConfig.catekom.email, envConfig.catekom.password, ref),
+      };
 
-        if (normalized === 'retrotrac') {
-          return (ref: string) => runRetrotrac(browser, RETROTRAC_EMAIL!, RETROTRAC_PASSWORD!, ref);
-        }
+      const invalidScrapers = selectedScrapers.filter((name) => !scraperMap[name.toLowerCase()]);
+      const validScrapers = selectedScrapers.filter((name) => scraperMap[name.toLowerCase()]);
 
-        if (normalized === 'parteequipos') {
-          return (ref: string) => runParteequipos(browser, PARTEEQUIPOS_EMAIL!, PARTEEQUIPOS_PASSWORD!, ref);
-        }
+      if (invalidScrapers.length > 0) {
+        req.log.warn({ invalidScrapers }, "Unknown scraper names requested");
+      }
 
-        if (normalized === 'servi') {
-          return (ref: string) => runServi(browser, SERVI_EMAIL!, SERVI_PASSWORD!, ref);
-        }
-
-        if (normalized === 'agrocosta') {
-          return (ref: string) => runAgrocosta(browser, AGRO_EMAIL!, AGRO_PASSWORD!, ref);
-        }
-
-        if (normalized === 'catekom') {
-          return (ref: string) => runCatekom(browser, CATEKOM_EMAIL!, CATEKOM_PASSWORD!, ref);
-        }
-
-        return null;
-      }).filter(Boolean) as Array<(ref: string) => Promise<any>>;
-
-      if (scraperRuns.length === 0) {
+      if (validScrapers.length === 0) {
         return reply.status(400).send({ error: 'No valid scrapers were selected' });
       }
 
       const results = await Promise.all(
         refsToSearch.map(async (reference) => {
-          const scraperResults = await Promise.all(
-            scraperRuns.map(async (runScraper) => {
-              const result = await runScraper(reference);
-              return result;
-            })
+          const scraperResults = await Promise.allSettled(
+            validScrapers.map((name) => scraperMap[name.toLowerCase()](reference))
           );
 
           return {
             reference,
             ...Object.fromEntries(
-              selectedScrapers.map((scraperName, index) => [scraperName.toLowerCase(), scraperResults[index]])
+              validScrapers.map((scraperName, index) => {
+                const result = scraperResults[index];
+                if (result.status === "fulfilled") {
+                  return [scraperName.toLowerCase(), result.value];
+                }
+                req.log.warn({ scraperName, reference, err: result.reason }, "Error occurred during scraping");
+                return [scraperName.toLowerCase(), { error: "Scraper failed", reason: String(result.reason) }];
+              })
             ),
           };
         })
       );
 
-      return reply.send({ results });
-    } finally {
-      await browser.close();
+      return reply.send({
+        results,
+        ...(invalidScrapers.length > 0 && { warnings: { unknownScrapers: invalidScrapers } }),
+      });
+    } catch (err) {
+      req.log.error({ err, refsToSearch, selectedScrapers }, "Error occurred during scraping");
+      return reply.status(500).send({ error: 'An error occurred during scraping' });
     }
   });
 
-  await app.listen({ port: 3000 });
+  const port = Number(process.env.PORT) || 3000;
+  const host = process.env.HOST || '0.0.0.0';
+  await app.listen({ port, host });
+
+  const shutdown = async () => {
+    await app.close();
+    process.exit(0);
+  };
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
 }
 
 main();
