@@ -1,15 +1,17 @@
 import { APIResponse, Browser, BrowserContext, Page } from "playwright";
-import { getUserIdFromSession } from "./auth";
 import { config } from "./config";
+import { FastifyBaseLogger } from "fastify";
+import { getUserIdFromSession } from "./auth";
 
 export async function searchProduct(
   context: BrowserContext,
-  refId: string
+  refId: string,
+  log: FastifyBaseLogger
 ): Promise<APIResponse | null> {
   const userId = getUserIdFromSession(config.sessionPath);
 
   if (!userId) {
-    console.error("[Retrotrac] Could not resolve from userId from session");
+    log.error({ scraper: "retrotrac", refId: refId }, "Could not resolve userId from session");
     return null;
   }
 
@@ -36,6 +38,7 @@ export async function searchProduct(
         },
       });
     } catch(e) {
+      log.error({ scraper: "retrotrac", refId: refId, err: e }, "Search request failed");
       console.error("[Retrotrac] Search request failed: ", e);
       return null;
     }

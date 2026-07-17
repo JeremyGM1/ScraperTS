@@ -45,11 +45,11 @@ async function main() {
 
     try {
       const scraperMap: Record<string, (ref: string) => Promise<any>> = {
-        retrotrac: (ref) => runRetrotrac(browser, envConfig.retrotrac.email, envConfig.retrotrac.password, ref),
-        parteequipos: (ref) => runParteequipos(browser, envConfig.parteequipos.email, envConfig.parteequipos.password, ref),
-        servi: (ref) => runServi(browser, envConfig.servi.email, envConfig.servi.password, ref),
-        agrocosta: (ref) => runAgrocosta(browser, envConfig.agrocosta.email, envConfig.agrocosta.password, ref),
-        catekom: (ref) => runCatekom(browser, envConfig.catekom.email, envConfig.catekom.password, ref),
+        retrotrac: (ref) => runRetrotrac(browser, envConfig.retrotrac.email, envConfig.retrotrac.password, ref, req.log),
+        parteequipos: (ref) => runParteequipos(browser, envConfig.parteequipos.email, envConfig.parteequipos.password, ref, req.log),
+        servi: (ref) => runServi(browser, envConfig.servi.email, envConfig.servi.password, ref, req.log),
+        agrocosta: (ref) => runAgrocosta(browser, envConfig.agrocosta.email, envConfig.agrocosta.password, ref, req.log),
+        catekom: (ref) => runCatekom(browser, envConfig.catekom.email, envConfig.catekom.password, ref, req.log),
       };
 
       const invalidScrapers = selectedScrapers.filter((name) => !scraperMap[name.toLowerCase()]);

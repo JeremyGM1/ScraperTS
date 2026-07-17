@@ -5,12 +5,14 @@ import { performLogin } from "./auth";
 import { config } from "./config";
 import { mapRetrotracItemsToProducts } from "./mappers"
 import fs from "fs";
+import { FastifyBaseLogger } from "fastify";
 
 export async function run(
   browser: Browser, 
   userEmail: string, 
   userPassword: string, 
-  refId: string
+  refId: string,
+  log: FastifyBaseLogger
 ): Promise<IProduct[] | null> {
   const sessionPath = config.sessionPath;
   const context = await browser.newContext({ storageState: fs.existsSync(sessionPath) ? sessionPath : undefined });
@@ -18,32 +20,30 @@ export async function run(
   try {
     const referenceToSearch = typeof refId === "string" ? refId.trim() : refId;
 
-    console.log(`[Retrotrac] Incoming reference:`, JSON.stringify(refId));
-    console.log(`[Retrotrac] Reference to search:`, JSON.stringify(referenceToSearch));
-
-    let response = await searchProduct(context, referenceToSearch);
+    let response = await searchProduct(context, referenceToSearch, log);
     
     if (!response) {
-      await performLogin(context, sessionPath, userEmail, userPassword);
-      response = await searchProduct(context, referenceToSearch);
+      await performLogin(context, sessionPath, userEmail, userPassword, log);
+      response = await searchProduct(context, referenceToSearch, log);
     }
 
     if (response && (response.status() === 401 || response.status() === 403)) {
-      await performLogin(context, sessionPath, userEmail, userPassword);
-      response = await searchProduct(context, referenceToSearch);
+      await performLogin(context, sessionPath, userEmail, userPassword, log);
+      response = await searchProduct(context, referenceToSearch, log);
     }
 
-    if (!response)
+    if (!response) {
+      log.warn({ scraper: "retrotrac", refId }, "No response received");
       return [];
+    }
 
     const json = await response.json();
-
-    console.log(refId, json);
-
     const result = mapRetrotracItemsToProducts(json.items ?? []);
+
+    log.info({ scraper: "retrotrac", refId, count: result.length }, "Scrape complete");
     return result;
   } catch (e) {
-    console.error(`[Retrotrac] Unexpected error: ${e}`);
+    log.error({ scraper: "retrotrac", refId, err: e }, "Unexpected error");
     return [];
   } finally {
     await context.close();
