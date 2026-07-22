@@ -1,46 +1,49 @@
 import { Browser, Page } from "playwright";
 import { config } from "./config";
+import { FastifyBaseLogger } from "fastify";
 import { IParteequiposProduct } from "../../types/parteequipos_product";
 import { performLogin, isSessionValid } from "./auth";
-import { searchProduct, getPriceFromPage, getInventory } from "./inventory";
+import { searchProduct, getInventory, getDiscountedPrice } from "./inventory";
 import fs from "fs";
 
 export async function run(
   browser: Browser,
   userEmail: string,
   userPassword: string,
-  refId: string
+  refId: string,
+  log: FastifyBaseLogger
 ): Promise<IParteequiposProduct[] | null> {
   const sessionPath = config.sessionPath;
   const context = await browser.newContext({
     storageState: fs.existsSync(sessionPath) ? sessionPath : undefined,
   });
-
-  let page: Page | null = null;
+ 
+  const page = await context.newPage();
 
   try {
-    if (!fs.existsSync(sessionPath) || !(await isSessionValid(context))) {
-      await performLogin(context, sessionPath, userEmail, userPassword);
+    const sessionValid = fs.existsSync(sessionPath)
+    ? await isSessionValid(page, log)
+    : false;
+
+    if (!sessionValid) {
+      await performLogin(page, sessionPath, userEmail, userPassword, log);
     }
 
-    const graphResponse = await searchProduct(context, refId);
-    const graphJson = await graphResponse.json();
-    const items: any[] = graphJson.data?.products?.items ?? [];
-
-    if (!items.length) return [];
-
-    page = await context.newPage();
+    const graphResponse = await searchProduct(context, refId, log);
 
     await page.goto(
       `${config.searchURL}${refId}`,
       { waitUntil: "networkidle" }
     );
 
+    const graphJson = await graphResponse.json();
+    const items: any[] = graphJson.data?.products?.items ?? [];
+
+    if (!items.length) return [];
+
     const results: IParteequiposProduct[] = await Promise.all(
       items.map(async (item: any) => {
-        const selector = `#product-price-${item.id}`;
-        const price = await page!.$eval(selector, el => el.getAttribute("data-price-amount")).catch(() => null);
-
+        const price = await getDiscountedPrice(context, refId, item.id);
         const inventory = await getInventory(context, item.id);
 
         const rawSku: string = (item.sku || "").trim();
@@ -68,7 +71,7 @@ export async function run(
 
     return results;
   } catch (err) {
-    console.error(`[Parte Equipos] Unexpected error:`, err);
+    log.error({ scraper: "Parte Equipos", refId, err: err})
     return [];
   } finally {
     await page?.close();

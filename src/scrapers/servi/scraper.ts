@@ -1,8 +1,9 @@
 import { Browser } from "playwright";
 import { config } from "./config";
+import { FastifyBaseLogger } from "fastify";
 import { getInternalId, fetchResults } from "./inventory";
 import { IProduct } from "../../types/product";
-import { login, ensureLoggedIn } from "./auth";
+import { ensureLoggedIn } from "./auth";
 import { mapServiItemsToProducts, ServiApiResponse } from "./mapper";
 import fs from "fs";
 
@@ -10,7 +11,8 @@ export async function run(
   browser: Browser,
   userEmail: string,
   userPassword: string,
-  refId: string
+  refId: string,
+  log: FastifyBaseLogger
 ): Promise<IProduct[] | null> {
   const sessionPath = config.sessionPath;
   const context = await browser.newContext({ storageState: fs.existsSync(sessionPath) ? sessionPath : undefined });
@@ -20,7 +22,7 @@ export async function run(
 
     const internalId = await getInternalId(context, refId);
     if (!internalId) {
-      console.error("[Servitractor] Could not retrieve internal ID for reference:", refId);
+      log.warn({ scraper: "Servitractor", refId }, "Could not retrieve internal ID for reference");
       return [];
     }
 
@@ -28,13 +30,16 @@ export async function run(
     const items = data.MODEL?.DATAJSONARRAY ?? [];
 
     if(!items.length) {
-      console.log(`[Servitractor] Product ${refId} not found`);
+      log.warn({ scraper: "Servitractor", refId }, "Product not found");
       return [];
     }
 
-    return mapServiItemsToProducts(items);
+    const results = mapServiItemsToProducts(items);
+
+    log.info({ scraper: "Servitractor", refId, count: results.length }, "Scrape completed");
+    return results;
   } catch (e) {
-    console.error(`[Servi] Unexpected error: ${e}`);
+    log.error({ scraper: "Servitractor", refId, err: e });
     return null;
   } finally {
     await context.close();
