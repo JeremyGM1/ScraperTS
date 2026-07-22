@@ -17,6 +17,7 @@ export async function run(
   const sessionPath = config.sessionPath;
   const context = await browser.newContext({ storageState: fs.existsSync(sessionPath) ? sessionPath : undefined });
 
+  const startTime = Date.now();
   try {
     await ensureLoggedIn(context, sessionPath, userEmail, userPassword);
 
@@ -36,10 +37,10 @@ export async function run(
 
     const results = mapServiItemsToProducts(items);
 
-    log.info({ scraper: "Servitractor", refId, count: results.length }, "Scrape completed");
+    log.info({ scraper: "Servitractor", refId, count: results.length, responseTime: startTime - Date.now() }, "Scrape completed");
     return results;
   } catch (e) {
-    log.error({ scraper: "Servitractor", refId, err: e });
+    log.error({ scraper: "Servitractor", refId, err: e, responseTime: startTime - Date.now() });
     return null;
   } finally {
     await context.close();

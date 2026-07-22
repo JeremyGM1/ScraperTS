@@ -17,6 +17,7 @@ export async function run(
   const sessionPath = config.sessionPath;
   const context = await browser.newContext({ storageState: fs.existsSync(sessionPath) ? sessionPath : undefined });
 
+  const startTime = Date.now();
   try {
     const referenceToSearch = typeof refId === "string" ? refId.trim() : refId;
 
@@ -40,10 +41,10 @@ export async function run(
     const json = await response.json();
     const result = mapRetrotracItemsToProducts(json.items ?? []);
 
-    log.info({ scraper: "retrotrac", refId, count: result.length }, "Scrape complete");
+    log.info({ scraper: "retrotrac", refId, count: result.length, responseTime: startTime - Date.now() }, "Scrape complete");
     return result;
   } catch (e) {
-    log.error({ scraper: "retrotrac", refId, err: e }, "Unexpected error");
+    log.error({ scraper: "retrotrac", refId, err: e, responseTime: startTime - Date.now() }, "Unexpected error");
     return [];
   } finally {
     await context.close();

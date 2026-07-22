@@ -4,6 +4,7 @@ import { ICatekomProduct } from "../../types/catekom_product";
 import { isLoginPageVisible } from "../../helpers/is_logged";
 import { login } from "./auth";
 import fs from "fs";
+import { FastifyBaseLogger } from "fastify";
 
 interface IGetPageResponse {
   d: {
@@ -17,12 +18,14 @@ export async function run(
   browser: Browser,
   username: string,
   password: string,
-  refId: string
+  refId: string,
+  log: FastifyBaseLogger
 ): Promise<ICatekomProduct[] | null> {
   const sessionPath = "sessions/catekom.json";
   const context = await browser.newContext({ storageState: fs.existsSync(sessionPath) ? sessionPath : undefined });
   const page = await context.newPage();
 
+  const startTime = Date.now();
   try {
     await page.goto(config.baseURL);
 
@@ -43,9 +46,8 @@ export async function run(
     await page.click("a[onclick*='quickFind']");
 
     const response = await responsePromise;
-
     if (!response.ok()) {
-      console.error(`[Catekom] GetPage request failed: ${response.status()}`);
+      log.error({ scraper: "Catekom", refId, status: response.status() }, "GetPage request failed.");
       return null;
     }
 
@@ -69,9 +71,10 @@ export async function run(
       };
     });
 
+    log.info({ scraper: "Catekom", refId, count: results.length, responseTime: startTime - Date.now() }, "Scrape complete");
     return results;
   } catch (e) {
-    console.error(`[Catekom] Error fetching product data: ${e}`);
+    log.error({ scraper: "Catekom", refId, e, responseTime: startTime - Date.now() }, "Error fetching product data");
     return null;
   } finally {
     await context.close();

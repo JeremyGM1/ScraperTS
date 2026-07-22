@@ -19,7 +19,7 @@ export async function run(
   });
  
   const page = await context.newPage();
-
+  const startTime = Date.now();
   try {
     const sessionValid = fs.existsSync(sessionPath)
     ? await isSessionValid(page, log)
@@ -68,10 +68,11 @@ export async function run(
         };
       })
     );
-
+    
+    log.info({ scraper: "Parte Equipos", refId, count: results.length, responseTime: startTime - Date.now() }, "Scrape complete");
     return results;
   } catch (err) {
-    log.error({ scraper: "Parte Equipos", refId, err: err})
+    log.error({ scraper: "Parte Equipos", refId, err: err, responseTime: startTime - Date.now()})
     return [];
   } finally {
     await page?.close();

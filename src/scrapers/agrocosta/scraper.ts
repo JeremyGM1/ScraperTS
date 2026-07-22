@@ -38,7 +38,6 @@ export async function run(
 
         const results = parseProducts(html);
         log.info({ scraper: "Agrocosta", refId, count: results.length, responseTime: startTime - Date.now() }, "Scrape complete");
-
         return results;
     } catch (e) {
         log.error({ scraper: "Agrocosta", refId, e, responseTime: startTime - Date.now() }, "Error extracting product");
