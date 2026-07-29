@@ -1,12 +1,10 @@
-import { Browser, Page } from "playwright";
+import { Browser } from "playwright";
 import { config } from "./config";
 import { FastifyBaseLogger } from "fastify";
+import { fetchSearchPage, getInventory, parseSearchResults } from "./inventory";
 import { IParteequiposProduct } from "../../types/parteequipos_product";
 import { performLogin, isSessionValid } from "./auth";
-import { fetchSearchPage, getInventory, parseSearchResults } from "./inventory";
-import fs, { writeFile } from "fs";
-
-import path from "path";
+import fs from "fs";
 
 export async function run(
   browser: Browser,

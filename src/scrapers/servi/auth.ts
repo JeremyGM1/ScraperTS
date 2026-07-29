@@ -2,7 +2,7 @@ import { BrowserContext, FrameLocator } from "playwright";
 import { config } from "./config";
 import fs from "fs";
 
-async function login(locator: FrameLocator, email: string, password: string): Promise<void> {    
+export async function login(locator: FrameLocator, email: string, password: string): Promise<void> {    
     await locator.locator("#login_id").fill(email);
     await locator.locator("#nextbtn").click();
 
@@ -11,7 +11,7 @@ async function login(locator: FrameLocator, email: string, password: string): Pr
     await locator.locator("#nextbtn").click();
 }
 
-async function isSessionValid(context: BrowserContext): Promise<boolean> {
+export async function isSessionValid(context: BrowserContext): Promise<boolean> {
     const page = await context.newPage();
     try {
         await page.goto(config.baseURL, {
@@ -27,7 +27,7 @@ async function isSessionValid(context: BrowserContext): Promise<boolean> {
     }
 }
 
-async function ensureLoggedIn(context: BrowserContext, sessionPath: string, email: string, password: string): Promise<void> {
+export async function ensureLoggedIn(context: BrowserContext, sessionPath: string, email: string, password: string): Promise<void> {
     if (fs.existsSync(sessionPath) && (await isSessionValid(context))) return;
     const page = await context.newPage();
 
@@ -42,5 +42,3 @@ async function ensureLoggedIn(context: BrowserContext, sessionPath: string, emai
         await page.close();
     }
 }
-
-export { login, isSessionValid, ensureLoggedIn };

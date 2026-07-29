@@ -1,10 +1,10 @@
 import { Browser } from "playwright";
 import { config } from "./config";
+import { ensureLoggedIn } from "./auth";
 import { FastifyBaseLogger } from "fastify";
 import { getInternalId, fetchResults } from "./inventory";
 import { IProduct } from "../../types/product";
-import { ensureLoggedIn } from "./auth";
-import { mapServiItemsToProducts, ServiApiResponse } from "./mapper";
+import { mapServiItemsToProducts } from "./mapper";
 import fs from "fs";
 
 export async function run(

@@ -1,4 +1,4 @@
-import { APIResponse, Browser, BrowserContext, Page } from "playwright";
+import { APIResponse, BrowserContext } from "playwright";
 import { config } from "./config";
 import { FastifyBaseLogger } from "fastify";
 import { getUserIdFromSession } from "./auth";

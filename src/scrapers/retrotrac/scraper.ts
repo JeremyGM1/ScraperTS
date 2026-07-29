@@ -1,11 +1,11 @@
 import { Browser } from "playwright";
-import { searchProduct } from "./inventory";
-import { IProduct } from "../../types/product";
-import { performLogin } from "./auth";
 import { config } from "./config";
-import { mapRetrotracItemsToProducts } from "./mappers"
-import fs from "fs";
 import { FastifyBaseLogger } from "fastify";
+import { IProduct } from "../../types/product";
+import { mapRetrotracItemsToProducts } from "./mappers"
+import { performLogin } from "./auth";
+import { searchProduct } from "./inventory";
+import fs from "fs";
 
 export async function run(
   browser: Browser, 

@@ -1,7 +1,7 @@
 import {  BrowserContext } from "playwright";
 import { config } from "./config";
 import { FastifyBaseLogger } from "fastify";
-import { IParteequiposProduct, IParsedProduct } from "../../types/parteequipos_product";
+import { IParsedProduct } from "../../types/parteequipos_product";
 import * as cheerio from "cheerio";
 
 export async function fetchSearchPage(context: BrowserContext, refId: string, log: FastifyBaseLogger): Promise<string> {

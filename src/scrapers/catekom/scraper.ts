@@ -1,10 +1,10 @@
 import { Browser } from "playwright";
 import { config } from "./config";
+import { FastifyBaseLogger } from "fastify";
 import { ICatekomProduct } from "../../types/catekom_product";
 import { isLoginPageVisible } from "../../helpers/is_logged";
 import { login } from "./auth";
 import fs from "fs";
-import { FastifyBaseLogger } from "fastify";
 
 interface IGetPageResponse {
   d: {
