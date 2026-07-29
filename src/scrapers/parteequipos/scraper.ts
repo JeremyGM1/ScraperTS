@@ -3,8 +3,10 @@ import { config } from "./config";
 import { FastifyBaseLogger } from "fastify";
 import { IParteequiposProduct } from "../../types/parteequipos_product";
 import { performLogin, isSessionValid } from "./auth";
-import { searchProduct, getInventory, getDiscountedPrice } from "./inventory";
-import fs from "fs";
+import { fetchSearchPage, getInventory, parseSearchResults } from "./inventory";
+import fs, { writeFile } from "fs";
+
+import path from "path";
 
 export async function run(
   browser: Browser,
@@ -12,70 +14,51 @@ export async function run(
   userPassword: string,
   refId: string,
   log: FastifyBaseLogger
-): Promise<IParteequiposProduct[] | null> {
+): Promise<IParteequiposProduct[] | null> { 
   const sessionPath = config.sessionPath;
-  const context = await browser.newContext({
-    storageState: fs.existsSync(sessionPath) ? sessionPath : undefined,
-  });
+  const context = await browser.newContext({ storageState: fs.existsSync(sessionPath) ? sessionPath : undefined });
  
-  const page = await context.newPage();
   const startTime = Date.now();
   try {
-    const sessionValid = fs.existsSync(sessionPath)
-    ? await isSessionValid(page, log)
-    : false;
+    const page = await context.newPage();  
+    const sessionValid = fs.existsSync(sessionPath) ? await isSessionValid(page, log) : false;
 
     if (!sessionValid) {
       await performLogin(page, sessionPath, userEmail, userPassword, log);
     }
 
-    const graphResponse = await searchProduct(context, refId, log);
+    const html = await fetchSearchPage(context, refId, log);
+    const parsedResults = parseSearchResults(html, log);
 
-    await page.goto(
-      `${config.searchURL}${refId}`,
-      { waitUntil: "networkidle" }
-    );
-
-    const graphJson = await graphResponse.json();
-    const items: any[] = graphJson.data?.products?.items ?? [];
-
-    if (!items.length) return [];
-
+    if(!parsedResults.length) {
+      log.warn({ scraper: "Parte Equipos", refId }, "No products found.");
+      return [];
+    }
+    
     const results: IParteequiposProduct[] = await Promise.all(
-      items.map(async (item: any) => {
-        const price = await getDiscountedPrice(context, refId, item.id);
-        const inventory = await getInventory(context, item.id);
-
-        const rawSku: string = (item.sku || "").trim();
-        const skuParts = rawSku.split("-");
-        const referencia = skuParts[0] || rawSku;
-
-        let marca = skuParts.slice(1).join("-") || "";
-        if (marca.startsWith("A") && marca.length > 1) {
-          marca = marca.slice(1);
+      parsedResults.map(async({ internalId, ...product }) => {
+        const skuId = internalId;
+        if (!skuId) {
+          log.warn({ scraper: "Parte Equipos", referencia: product.Referencia }, "Invalid sku id, skipping inventory lookup.");
+          return product;
         }
 
-        const rawName: string = (item.name || "").trim();
-        const nombre = rawName.replace(/\s+\d+$/u, "").trim();
-
-        return {
-          Referencia: referencia,
-          Nombre: nombre,
-          Marca: marca,
-          Precio: price ?? "0",
-          Inventario: inventory.total,
-          Monterrey: inventory.monterrey,
-        };
+        try {
+          const { total, monterrey } = await getInventory(context, skuId);
+          return { ...product, Inventario: total, Monterrey: monterrey };
+        }catch(err){
+          log.warn({ scraper: "Parte Equipos", referencia: product.Referencia, err }, "Inventory lookup failed.");
+          return product;
+        }
       })
     );
-    
-    log.info({ scraper: "Parte Equipos", refId, count: results.length, responseTime: startTime - Date.now() }, "Scrape complete");
+
+    log.info({ scraper: "Parte Equipos", refId, count: results.length, responseTime: Date.now() - startTime }, "Scrape complete");
     return results;
   } catch (err) {
-    log.error({ scraper: "Parte Equipos", refId, err: err, responseTime: startTime - Date.now()})
+    log.error({ scraper: "Parte Equipos", refId, err: err, responseTime: Date.now() - startTime });
     return [];
   } finally {
-    await page?.close();
     await context.close();
   }
 }

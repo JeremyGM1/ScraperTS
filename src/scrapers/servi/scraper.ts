@@ -37,10 +37,10 @@ export async function run(
 
     const results = mapServiItemsToProducts(items);
 
-    log.info({ scraper: "Servitractor", refId, count: results.length, responseTime: startTime - Date.now() }, "Scrape completed");
+    log.info({ scraper: "Servitractor", refId, count: results.length, responseTime: Date.now() - startTime }, "Scrape completed");
     return results;
   } catch (e) {
-    log.error({ scraper: "Servitractor", refId, err: e, responseTime: startTime - Date.now() });
+    log.error({ scraper: "Servitractor", refId, err: e, responseTime: Date.now() - startTime });
     return null;
   } finally {
     await context.close();

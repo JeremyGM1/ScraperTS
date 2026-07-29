@@ -4,4 +4,8 @@ interface IParteequiposProduct extends IProduct {
   Monterrey?: number;
 }
 
-export type { IParteequiposProduct };
+interface IParsedProduct extends IParteequiposProduct {
+  internalId: string;
+}
+
+export type { IParteequiposProduct, IParsedProduct };

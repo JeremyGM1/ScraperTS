@@ -71,10 +71,10 @@ export async function run(
       };
     });
 
-    log.info({ scraper: "Catekom", refId, count: results.length, responseTime: startTime - Date.now() }, "Scrape complete");
+    log.info({ scraper: "Catekom", refId, count: results.length, responseTime: Date.now() - startTime   }, "Scrape complete");
     return results;
   } catch (e) {
-    log.error({ scraper: "Catekom", refId, e, responseTime: startTime - Date.now() }, "Error fetching product data");
+    log.error({ scraper: "Catekom", refId, e, responseTime: Date.now() - startTime }, "Error fetching product data");
     return null;
   } finally {
     await context.close();

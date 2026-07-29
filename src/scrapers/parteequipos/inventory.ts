@@ -1,61 +1,74 @@
 import {  BrowserContext } from "playwright";
 import { config } from "./config";
-import { config as envConfig } from "../../helpers/env";
 import { FastifyBaseLogger } from "fastify";
-import { Page } from "playwright";
+import { IParteequiposProduct, IParsedProduct } from "../../types/parteequipos_product";
 import * as cheerio from "cheerio";
 
-async function searchProduct(context: BrowserContext, refId: string, log: FastifyBaseLogger) {
-  const tokenResponse = await context.request.post(config.URLgraphQL, {
-    data: {
-      query: `
-        mutation {
-          generateCustomerToken(email: "${envConfig.parteequipos.email}", password: "${envConfig.parteequipos.password}") {
-            token
-          }
-        }
-      `
-    }
-  });
-  const tokenJson = await tokenResponse.json();
-  const token = tokenJson.data?.generateCustomerToken?.token;
-
-  return await context.request.post(
-    config.URLgraphQL,
+export async function fetchSearchPage(context: BrowserContext, refId: string, log: FastifyBaseLogger): Promise<string> {
+  const response = await context.request.get(
+    `${config.searchURL}${refId}`,
     {
-      headers: { Authorization: `Bearer ${token}` },
-      data: {
-        query: `
-        {
-        products(search: "${refId}") 
-          {
-            items {
-              id
-              sku
-              name
-              url_key
-              stock_status
-              price_range {
-                minimum_price {
-                  regular_price {
-                    value
-                  }
-                  final_price {
-                    value
-                  }
-                }
-              }
-            }
-          }
-        }
-        `
-      }
+      headers: {
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+      },
     }
   );
+  
+  if (!response.ok()) {
+    log.warn({ scraper: "Parte Equipos", refId, status: response.status() }, "Search page fetch failed");
+  }
+
+  return await response.text();
 }
 
-async function getInventory(context: import("playwright").BrowserContext, id: number): Promise<{ total: number; monterrey: number }> {
-  const inventoryUrl = `${config.inventoryURL}/${id}`;
+export function parseSearchResults(html: string, log: FastifyBaseLogger): IParsedProduct[] {
+  const $ = cheerio.load(html);
+  const results: IParsedProduct[] = [];
+
+  $("li.item.product.product-item").each((_, el) => {
+    const $el = $(el) ;
+    const $btn = $el.find("button[data-sku]").first();
+
+    const rawSku = ($btn.attr("data-sku") || "").trim();
+    if (!rawSku) {
+      log.warn({ scraper: "Parte Equipos" }, "Product block missing data-sku, skipping");
+      return;
+    }
+
+    const skuParts = rawSku.split("-");
+    const referencia = skuParts[0] || rawSku;
+
+    let marca = skuParts.slice(1).join("-") || "";
+    if (marca.startsWith("A") && marca.length > 1) {
+      marca = marca.slice(1);
+    }
+    const rawName = ($btn.attr("data-name") || $el.find(".product-item-link").first().text() || "").trim();
+    const nombre = rawName.replace(/\s+\d+$/u, "").trim();
+
+    const precio = $el.find("[data-price-type='finalPrice']").first().attr("data-price-amount") || "0";
+
+    const internalId = ($el.find("#btn-show-inventory").attr("data-sku") || "").trim();
+    if (!internalId) {
+      log.warn({ scraper: "Parte Equipos", referencia }, "Missing internal inventory sku, inventory lookup skipped.");
+    }
+
+    results.push({
+      Referencia: referencia,
+      Nombre: nombre,
+      Marca: marca,
+      Precio: precio,
+      Inventario: undefined,
+      Monterrey: undefined,
+      internalId
+    });
+  });
+  return results;
+}
+
+export async function getInventory(context: import("playwright").BrowserContext, internalId: string): Promise<{ total: number; monterrey: number }> {
+  const inventoryUrl = `${config.inventoryURL}/${internalId}`;
 
   const response = await context.request.post(
     inventoryUrl,
@@ -64,7 +77,7 @@ async function getInventory(context: import("playwright").BrowserContext, id: nu
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         "X-Requested-With": "XMLHttpRequest",
       },
-      data: `sku=${id}`,
+      data: `sku=${internalId}`,
     }
   );
 
@@ -87,33 +100,3 @@ async function getInventory(context: import("playwright").BrowserContext, id: nu
 
   return { total, monterrey };
 }
-
-async function getSearchPage(context: BrowserContext, refId: string) {
-  const url = `${config.searchURL}${encodeURIComponent(refId)}`;
-  return await context.request.get(url);
-}
-
-async function getPriceFromPage(page: Page, refId: string, itemId: number): Promise<string | null> {
-  await page.goto(
-    `${config.searchURL}${refId}`,
-    { waitUntil: "networkidle" }
-  );
-
-  const selector = `#product-price-${itemId}`;
-  const el = await page.$(selector);
-  if (!el) return null;
-
-  return await el.getAttribute("data-price-amount");
-}
-
-async function getDiscountedPrice(context: BrowserContext, refId: string, itemId: string): Promise<string | null>{
-  const url = `${config.searchURL}${refId}`;
-  const response = await context.request.get(url);
-  const html = await response.text();
-
-  const $ = cheerio.load(html);
-  const price = $(`#product-price-${itemId}`).attr("data-price-amount");
-  return price ?? null;
-}
-
-export  { searchProduct, getInventory, getSearchPage, getPriceFromPage, getDiscountedPrice };
