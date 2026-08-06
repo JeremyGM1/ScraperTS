@@ -9,11 +9,11 @@
     };
 </script>
         <meta charset="utf-8"/>
-<meta name="title" content="Resultados de búsqueda para: &#039;6p7773&#039;"/>
+<meta name="title" content="Resultados de búsqueda para: &#039;5I7739&#039;"/>
 <meta name="robots" content="NOINDEX,NOFOLLOW"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
 <meta name="format-detection" content="telephone=no"/>
-<title>Resultados de búsqueda para: &#039;6p7773&#039;</title>
+<title>Resultados de búsqueda para: &#039;5I7739&#039;</title>
 <link  rel="stylesheet" type="text/css"  media="all" href="https://tienda.partequipos.com/static/version1782369833/frontend/Smartwave/porto/es_CO/mage/calendar.css" />
 <link  rel="stylesheet" type="text/css"  media="all" href="https://tienda.partequipos.com/static/version1782369833/frontend/Smartwave/porto/es_CO/fancybox/css/jquery.fancybox.css" />
 <link  rel="stylesheet" type="text/css"  media="all" href="https://tienda.partequipos.com/static/version1782369833/frontend/Smartwave/porto/es_CO/css/styles-m.css" />
@@ -281,7 +281,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                            }'
                            type="text"
                            name="q"
-                           value="6p7773"
+                           value="5I7739"
                            placeholder="Consulte su referencia aquí"
                            class="input-text"
                            maxlength="128"
@@ -343,30 +343,63 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         }
     }
     </script>
-<li class="item link compare " data-bind="scope: 'compareProducts'" data-role="compare-products-link">
-    <a class="action compare" title="Comparar productos"
-       data-bind="attr: {'href': compareProducts().listUrl}, css: {'': !compareProducts().count}"
-    >
-    	<em class="porto-icon-chart hidden-xs"></em>
-        Comparar        (<span class="counter qty" data-bind="text: compareProducts().countCaption"></span>)
+    <li class="customer-welcome">
+        <span class="customer-name"
+              role="link"
+              tabindex="0"
+              data-mage-init='{"dropdown":{}}'
+              data-toggle="dropdown"
+              data-trigger-keypress-button="true"
+              data-bind="scope: 'customer'">
+            <button type="button"
+                    class="action switch"
+                    tabindex="-1"
+                    data-action="customer-menu-toggle">
+                <span>Cambio</span>
+            </button>
+        </span>
+        <script type="text/x-magento-init">
+        {
+            "*": {
+                "Magento_Ui/js/core/app": {
+                    "components": {
+                        "customer": {
+                            "component": "Magento_Customer/js/view/customer"
+                        }
+                    }
+                }
+            }
+        }
+        </script>
+                    <div class="customer-menu" data-target="dropdown">
+                <ul class="header links"><li><a href="https://tienda.partequipos.com/customer/account/" >Mi Cuenta</a></li><li class="link wishlist" data-bind="scope: 'wishlist'">
+    <a href="https://tienda.partequipos.com/wishlist/">Mi lista de deseos        <!-- ko if: wishlist().counter -->
+        <span data-bind="text: wishlist().counter" class="counter qty"></span>
+        <!-- /ko -->
     </a>
 </li>
 <script type="text/x-magento-init">
-{"[data-role=compare-products-link]": {"Magento_Ui/js/core/app": {"components":{"compareProducts":{"component":"Magento_Catalog\/js\/view\/compare-products"}}}}}
+    {
+        "*": {
+            "Magento_Ui/js/core/app": {
+                "components": {
+                    "wishlist": {
+                        "component": "Magento_Wishlist/js/view/wishlist"
+                    }
+                }
+            }
+        }
+    }
+
 </script>
 
-    <li class="authorization-link" data-label="o">
-        <a href="https://tienda.partequipos.com/customer/account/login/referer/aHR0cHM6Ly90aWVuZGEucGFydGVxdWlwb3MuY29tL2NhdGFsb2dzZWFyY2gvcmVzdWx0L2luZGV4Lz9xPTZwNzc3Mw%2C%2C/" class="customer-login-link">
-            <span>Iniciar sesión</span>
-
-        </a>
+    <li class="authorization-link">
+        <a href="https://tienda.partequipos.com/customer/account/"> <span>Mi cuenta</span> </a>
     </li>
-    <!-- <li class="authorization-link  _register" data-label="o">
-        <a href="https://tienda.partequipos.com/customer/index/register/">
-            Ingresa
-        </a>
-    </li> -->
-
+    <li class="authorization-link">
+        <a href="https://tienda.partequipos.com/customer/account/logout/"> <span>Salir</span> </a>
+    </li>
+    
 <li class="authorization-link contact" data-label="o">
     <a href="https://tienda.partequipos.com/contact/">
         <span>Contáctenos</span>
@@ -379,7 +412,46 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             MercaPartes
         </a>
     </li> -->
-</ul>            </div>
+    <!-- <li class="authorization-link">
+        <a href="https://tienda.partequipos.com/customer/account/">Mi perfil</a>
+    </li> -->
+    </ul>            </div>
+            </li>
+<li class="item link compare " data-bind="scope: 'compareProducts'" data-role="compare-products-link">
+    <a class="action compare" title="Comparar productos"
+       data-bind="attr: {'href': compareProducts().listUrl}, css: {'': !compareProducts().count}"
+    >
+    	<em class="porto-icon-chart hidden-xs"></em>
+        Comparar        (<span class="counter qty" data-bind="text: compareProducts().countCaption"></span>)
+    </a>
+</li>
+<script type="text/x-magento-init">
+{"[data-role=compare-products-link]": {"Magento_Ui/js/core/app": {"components":{"compareProducts":{"component":"Magento_Catalog\/js\/view\/compare-products"}}}}}
+</script>
+
+    <li class="authorization-link">
+        <a href="https://tienda.partequipos.com/customer/account/"> <span>Mi cuenta</span> </a>
+    </li>
+    <li class="authorization-link">
+        <a href="https://tienda.partequipos.com/customer/account/logout/"> <span>Salir</span> </a>
+    </li>
+    
+<li class="authorization-link contact" data-label="o">
+    <a href="https://tienda.partequipos.com/contact/">
+        <span>Contáctenos</span>
+    </a>
+</li>
+
+
+    <!-- <li class="authorization-link" data-label="o" >
+        <a href="#">
+            MercaPartes
+        </a>
+    </li> -->
+    <!-- <li class="authorization-link">
+        <a href="https://tienda.partequipos.com/customer/account/">Mi perfil</a>
+    </li> -->
+    </ul>            </div>
 
         </div>
         
@@ -422,7 +494,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
         </div>
         <script>
-        window.checkout = {"shoppingCartUrl":"https:\/\/tienda.partequipos.com\/checkout\/cart\/","checkoutUrl":"https:\/\/tienda.partequipos.com\/checkout\/","updateItemQtyUrl":"https:\/\/tienda.partequipos.com\/checkout\/sidebar\/updateItemQty\/","removeItemUrl":"https:\/\/tienda.partequipos.com\/checkout\/sidebar\/removeItem\/","imageTemplate":"Magento_Catalog\/product\/image_with_borders","baseUrl":"https:\/\/tienda.partequipos.com\/","minicartMaxItemsVisible":5,"websiteId":"1","maxItemsToDisplay":10,"storeId":"1","storeGroupId":"1","customerLoginUrl":"https:\/\/tienda.partequipos.com\/customer\/account\/login\/referer\/aHR0cHM6Ly90aWVuZGEucGFydGVxdWlwb3MuY29tL2NhdGFsb2dzZWFyY2gvcmVzdWx0L2luZGV4Lz9xPTZwNzc3Mw%2C%2C\/","isRedirectRequired":false,"autocomplete":"off","captcha":{"user_login":{"isCaseSensitive":false,"imageHeight":50,"imageSrc":"","refreshUrl":"https:\/\/tienda.partequipos.com\/captcha\/refresh\/","isRequired":false,"timestamp":1785341367}}};
+        window.checkout = {"shoppingCartUrl":"https:\/\/tienda.partequipos.com\/checkout\/cart\/","checkoutUrl":"https:\/\/tienda.partequipos.com\/checkout\/","updateItemQtyUrl":"https:\/\/tienda.partequipos.com\/checkout\/sidebar\/updateItemQty\/","removeItemUrl":"https:\/\/tienda.partequipos.com\/checkout\/sidebar\/removeItem\/","imageTemplate":"Magento_Catalog\/product\/image_with_borders","baseUrl":"https:\/\/tienda.partequipos.com\/","minicartMaxItemsVisible":5,"websiteId":"1","maxItemsToDisplay":10,"storeId":"1","storeGroupId":"1","customerLoginUrl":"https:\/\/tienda.partequipos.com\/customer\/account\/login\/referer\/aHR0cHM6Ly90aWVuZGEucGFydGVxdWlwb3MuY29tL2NhdGFsb2dzZWFyY2gvcmVzdWx0L2luZGV4Lz9xPTVJNzczOQ%2C%2C\/","isRedirectRequired":false,"autocomplete":"off","captcha":{"user_login":{"isCaseSensitive":false,"imageHeight":50,"imageSrc":"","refreshUrl":"https:\/\/tienda.partequipos.com\/captcha\/refresh\/","isRequired":false,"timestamp":1785357194}}};
     </script>
     <script type="text/x-magento-init">
     {
@@ -498,7 +570,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     Volver al inicio                </a>
                         </li>
                     <li class="item search">
-                            <strong>Resultados de búsqueda para: &#039;6p7773&#039;</strong>
+                            <strong>Resultados de búsqueda para: &#039;5I7739&#039;</strong>
                         </li>
             </ul>
 </div>
@@ -506,7 +578,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="page-title-wrapper">
     <h1 class="page-title"
                 >
-        <span class="base" data-ui-id="page-title-wrapper" >Resultados de búsqueda para: &#039;6p7773&#039;</span>    </h1>
+        <span class="base" data-ui-id="page-title-wrapper" >Resultados de búsqueda para: &#039;5I7739&#039;</span>    </h1>
     </div>
 <div class="page messages"><div data-placeholder="messages"></div>
 <div data-bind="scope: 'messages'">
@@ -545,7 +617,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             }
     }
 </script>
-</div><div class="columns"><div class="column main"><input name="form_key" type="hidden" value="49l30mBhAPpUmWVN" /><div id="authenticationPopup" data-bind="scope:'authenticationPopup'" style="display: none;">
+</div><div class="columns"><div class="column main"><input name="form_key" type="hidden" value="ejWgbYuwtO120L2b" /><div id="authenticationPopup" data-bind="scope:'authenticationPopup'" style="display: none;">
     <script>
         window.authenticationPopup = {"autocomplete":"off","customerRegisterUrl":"https:\/\/tienda.partequipos.com\/customer\/account\/create\/","customerForgotPasswordUrl":"https:\/\/tienda.partequipos.com\/customer\/account\/forgotpassword\/","baseUrl":"https:\/\/tienda.partequipos.com\/"};
     </script>
@@ -604,14 +676,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script type="text/x-magento-init">
     {
         "body": {
-            "pageCache": {"url":"https:\/\/tienda.partequipos.com\/page_cache\/block\/render\/?q=6p7773","handles":["default","catalogsearch_result_index"],"originalRequest":{"route":"catalogsearch","controller":"result","action":"index","uri":"\/catalogsearch\/result\/?q=6p7773"},"versionCookieName":"private_content_version"}        }
+            "pageCache": {"url":"https:\/\/tienda.partequipos.com\/page_cache\/block\/render\/?q=5I7739","handles":["default","catalogsearch_result_index"],"originalRequest":{"route":"catalogsearch","controller":"result","action":"index","uri":"\/catalogsearch\/result\/?q=5I7739"},"versionCookieName":"private_content_version"}        }
     }
 </script>
 
     <div class="search results">
         
 
-        <div class="toolbar toolbar-products" data-mage-init='{"productListToolbarForm":{"mode":"product_list_mode","direction":"product_list_dir","order":"product_list_order","limit":"product_list_limit","modeDefault":"grid","directionDefault":"asc","orderDefault":"price","limitDefault":"12","url":"https:\/\/tienda.partequipos.com\/catalogsearch\/result\/index\/?q=6p7773","formKey":"49l30mBhAPpUmWVN","post":false}}'>
+        <div class="toolbar toolbar-products" data-mage-init='{"productListToolbarForm":{"mode":"product_list_mode","direction":"product_list_dir","order":"product_list_order","limit":"product_list_limit","modeDefault":"grid","directionDefault":"asc","orderDefault":"price","limitDefault":"12","url":"https:\/\/tienda.partequipos.com\/catalogsearch\/result\/index\/?q=5I7739","formKey":"ejWgbYuwtO120L2b","post":false}}'>
                     
 
 <div class="toolbar-sorter sorter">
@@ -718,13 +790,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                         <li class="item product product-item">                <div class="product-item-info" data-container="product-grid">
                     
                     <div class="product photo product-item-photo">
-                                                <a href="https://tienda.partequipos.com/catalog/product/view/id/5750/s/anillo-teflon-6p7773-aitr-caterpillar5/" tabindex="-1">
-                                                        <img class="product-image-photo default_image" src="https://tienda.partequipos.com/media/catalog/product/placeholder/stores/1/Marca_de_agua_1.png"
-                                 alt="ANILLO TEFLON 6P7773"/>
+                                                <a href="https://tienda.partequipos.com/catalog/product/view/id/4520/s/valvula-escape-5i7739-aitr-caterpillar8/" tabindex="-1">
+                                                        <img class="product-image-photo default_image" src="https://tienda.partequipos.com/media/catalog/product/cache/37cea7b6b4074501466ca3931d7df93e/5/I/5I7739-AITR_1_1.jpg"
+                                 alt="VALVULA ESCAPE 5i7739"/>
 
                             <!-- <div class="brand-image caterpillar"></div> -->
                                                     </a>
-                        <!--  -->
+                        <!-- <div class="product-labels"><div class="product-label sale-label">-8%</div></div> -->
                         <!-- Dailydeal Product data -->
                                                 <!-- Dailydeal Product End -->
                                             </div>
@@ -732,8 +804,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                                 
                                                                             <strong class="product name product-item-name">
                                 <a class="product-item-link"
-                                   href="https://tienda.partequipos.com/catalog/product/view/id/5750/s/anillo-teflon-6p7773-aitr-caterpillar5/">
-                                    ANILLO TEFLON 6P7773                                </a>
+                                   href="https://tienda.partequipos.com/catalog/product/view/id/4520/s/valvula-escape-5i7739-aitr-caterpillar8/">
+                                    VALVULA ESCAPE 5i7739                                </a>
                             </strong>
 
                             <strong>
@@ -787,19 +859,35 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             </div>
                         
 
-                        <span class="product-item-inventory">   <a href="#" id="btn-show-inventory" data-sku="5750" class="btn-show-inventory">Ver Disponibilidad   </a></span>
-                                                                            <div class="price-box price-final_price" data-role="priceBox" data-product-id="5750" data-price-box="product-id-5750">
+                        <span class="product-item-inventory">   <a href="#" id="btn-show-inventory" data-sku="4520" class="btn-show-inventory">Ver Disponibilidad   </a></span>
+                                                                            <div class="price-box price-final_price" data-role="priceBox" data-product-id="4520" data-price-box="product-id-4520">
 
-                        
+                        <span class="special-price">
+                
 
 <span class="price-container price-final_price tax weee"
         >
-        <span  id="product-price-5750"                data-price-amount="44670"
+            <span class="price-label"></span>
+        <span  id="product-price-4520"                data-price-amount="25079"
         data-price-type="finalPrice"
         class="price-wrapper "
-    ><span class="price">$44.670</span></span>
+    ><span class="price">$25.079</span></span>
         
 </span>
+            </span>
+            <span class="old-price">
+                
+
+<span class="price-container price-final_price tax weee"
+        >
+            <span class="price-label"></span>
+        <span  id="old-price-4520"                data-price-amount="27260"
+        data-price-type="oldPrice"
+        class="price-wrapper "
+    ><span class="price">$27.260</span></span>
+        
+</span>
+            </span>
                         <span class="label-tax">Precio sin IVA</span>
 
 </div>                                                            <span>PRECIO SIN IVA</span>
@@ -807,23 +895,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                                     <div class="product-item-inner">
                                 <div class="product actions product-item-actions ">
                                                                                                                                                     <div class="actions-primary">
-                                                                                                                                <form data-role="tocart-form" action="https://tienda.partequipos.com/checkout/cart/add/uenc/aHR0cHM6Ly90aWVuZGEucGFydGVxdWlwb3MuY29tL2NhdGFsb2dzZWFyY2gvcmVzdWx0Lz9xPTZwNzc3Mw%2C%2C/product/5750/"
+                                                                                                                                <form data-role="tocart-form" action="https://tienda.partequipos.com/checkout/cart/add/uenc/aHR0cHM6Ly90aWVuZGEucGFydGVxdWlwb3MuY29tL2NhdGFsb2dzZWFyY2gvcmVzdWx0Lz9xPTVJNzczOQ%2C%2C/product/4520/"
                                                   method="post">
                                                 <input type="hidden" name="product"
-                                                       value="5750">
+                                                       value="4520">
                                                 <input type="hidden"
                                                        name="uenc"
-                                                       value="aHR0cHM6Ly90aWVuZGEucGFydGVxdWlwb3MuY29tL2NoZWNrb3V0L2NhcnQvYWRkL3VlbmMvYUhSMGNITTZMeTkwYVdWdVpHRXVjR0Z5ZEdWeGRXbHdiM011WTI5dEwyTmhkR0ZzYjJkelpXRnlZMmd2Y21WemRXeDBMejl4UFRad056YzNNdyUyQyUyQy9wcm9kdWN0LzU3NTAv">
-                                                                                                <input name="form_key" type="hidden" value="49l30mBhAPpUmWVN" />                                                
+                                                       value="aHR0cHM6Ly90aWVuZGEucGFydGVxdWlwb3MuY29tL2NoZWNrb3V0L2NhcnQvYWRkL3VlbmMvYUhSMGNITTZMeTkwYVdWdVpHRXVjR0Z5ZEdWeGRXbHdiM011WTI5dEwyTmhkR0ZzYjJkelpXRnlZMmd2Y21WemRXeDBMejl4UFRWSk56Y3pPUSUyQyUyQy9wcm9kdWN0LzQ1MjAv">
+                                                                                                <input name="form_key" type="hidden" value="ejWgbYuwtO120L2b" />                                                
                                                     <button type="submit"
-                                                            title="Agregar a cotización"
+                                                            title="Agregar al carrito"
                                                             class="action tocart primary"
-                                                            data-name="ANILLO TEFLON 6P7773"
+                                                            data-name="VALVULA ESCAPE 5i7739"
                                                             -
-                                                            data-image="https://tienda.partequipos.com/media/catalog/product/placeholder/stores/1/Marca_de_agua_1.png"
-                                                            data-sku="6P7773-AITR"
+                                                            data-image="https://tienda.partequipos.com/media/catalog/product/cache/37cea7b6b4074501466ca3931d7df93e/5/I/5I7739-AITR_1_1.jpg"
+                                                            data-sku="5i7739-AITR"
                                                     >
-                                                        <span>Agregar a cotización</span>
+                                                        <span>Agregar al carrito</span>
                                                     </button>
 
                                                 
@@ -845,7 +933,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </div>
                 </li>                    </ol>
     </div>
-            <div class="toolbar toolbar-products" data-mage-init='{"productListToolbarForm":{"mode":"product_list_mode","direction":"product_list_dir","order":"product_list_order","limit":"product_list_limit","modeDefault":"grid","directionDefault":"asc","orderDefault":"price","limitDefault":"12","url":"https:\/\/tienda.partequipos.com\/catalogsearch\/result\/index\/?q=6p7773","formKey":"49l30mBhAPpUmWVN","post":false}}'>
+            <div class="toolbar toolbar-products" data-mage-init='{"productListToolbarForm":{"mode":"product_list_mode","direction":"product_list_dir","order":"product_list_order","limit":"product_list_limit","modeDefault":"grid","directionDefault":"asc","orderDefault":"price","limitDefault":"12","url":"https:\/\/tienda.partequipos.com\/catalogsearch\/result\/index\/?q=5I7739","formKey":"ejWgbYuwtO120L2b","post":false}}'>
                     
 
 <div class="toolbar-sorter sorter">
@@ -1038,7 +1126,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
 
     //Set date as magentodatetime
-    var date = new Date('2026-07-29 16:09:29');
+    var date = new Date('2026-07-29 20:33:16');
 
     var day = date.getDate();
     var month = date.getMonth();
@@ -1062,6 +1150,81 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 </div>
 </div><div class="sidebar sidebar-main">
+</div><div class="sidebar sidebar-additional"><div class="block block-reorder" data-bind="scope: 'lastOrderedItems'">
+    <div class="block-title no-display"
+         data-bind="css: {'no-display': !lastOrderedItems().items || lastOrderedItems().items.length === 0}">
+        <strong id="block-reorder-heading" role="heading" aria-level="2">Recientemente ordenado</strong>
+    </div>
+    <div class="block-content no-display"
+         data-bind="css: {'no-display': !lastOrderedItems().items || lastOrderedItems().items.length === 0}"
+         aria-labelledby="block-reorder-heading">
+        <form method="post" class="form reorder"
+              action="https://tienda.partequipos.com/checkout/cart/addgroup/" id="reorder-validate-detail">
+            <strong class="subtitle">Últimos artículos pedidos</strong>
+            <ol id="cart-sidebar-reorder" class="product-items product-items-names"
+                data-bind="foreach: lastOrderedItems().items">
+                <li class="product-item">
+                    <div class="field item choice">
+                        <label class="label" data-bind="attr: {'for': 'reorder-item-' + id}">
+                            <span>Añadir al carrito</span>
+                        </label>
+                        <div class="control">
+                            <input type="checkbox" name="order_items[]"
+                                   data-bind="attr: {
+                                        id: 'reorder-item-' + id,
+                                        value: id,
+                                        title: is_saleable ? 'Añadir al carrito' : 'Producto no es vendible.'
+                                   },
+                                   disable: !is_saleable"
+                                   class="checkbox" data-validate='{"validate-one-checkbox-required-by-name": true}'/>
+                        </div>
+                    </div>
+                    <strong class="product-item-name">
+                        <a data-bind="attr: {href: url}" class="product-item-link">
+                            <span data-bind="text: name"></span>
+                        </a>
+                    </strong>
+                </li>
+            </ol>
+            <div id="cart-sidebar-reorder-advice-container"></div>
+            <div class="actions-toolbar">
+                <div class="primary"
+                     data-bind="visible: isShowAddToCart">
+                    <button type="submit" title="A&#xF1;adir&#x20;al&#x20;carrito" class="action tocart primary">
+                        <span>Añadir al carrito</span>
+                    </button>
+                </div>
+                <div class="secondary">
+                    <a class="action view" href="https://tienda.partequipos.com/customer/account/#my-orders-table">
+                        <span>Ver todos</span>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+    require(["jquery", "mage/mage"], function(jQuery){
+        jQuery('#reorder-validate-detail').mage('validation', {
+            errorPlacement: function(error, element) {
+                error.appendTo('#cart-sidebar-reorder-advice-container');
+            }
+        });
+    });
+    </script>
+</div>
+<script type="text/x-magento-init">
+{
+    "*": {
+        "Magento_Ui/js/core/app": {
+            "components": {
+                "lastOrderedItems": {
+                    "component": "Magento_Sales/js/view/last-ordered-items"
+                }
+            }
+        }
+    }
+}
+</script>
 </div></div></main><footer class="page-footer"><script >
 
     require([
@@ -1135,22 +1298,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <script id="templateCart" type="text/x-jquery-tmpl">
     <div class="wrapper-grid">
-          <div class="title">¡Has agregado correctamente este producto a la solicitud de cotización!</div>
+           <div class="title">¡Has agregado correctamente este producto al carrito de compras!</div>
               <div class="image">
            <img src="${product.image}" alt="Products name">
        </div>
        <div class="description">
            <h4>${product.name}</h4>
-                          <p class="information">Compartiremos más información al aceptar cotización</p>
+                         <p class="price"><span>Ahora </span> ${product.price} </p>
+              <p class="price-old">Antes <span>${product.oldPrice}</span></p>
                       <div class="quantity">Cantidad <span>${product.quantity}</span></div>
        </div>
 
        <div class="actions">
              <button  type="button" class="continue" >
-                                    Continuar Cotizando
+                                    Continuar Comprando
                             </button>
                          <button onclick="location.href='https://tienda.partequipos.com//checkout/cart'" class="pay">
-                Finalizar            </button>
+                Ir al carrito            </button>
        </div>
 
     </div>
@@ -1549,8 +1713,8 @@ flex-direction: column;
                     <label >Departamento</label>
                     <select name="country"  class="form-control js-get-city" required data-children="city_">
                         <option>Seleccione</option>
-                                                    <option value="Amazonas">Amazonas</option>
                                                     <option value="AMAZONAS">AMAZONAS</option>
+                                                    <option value="Amazonas">Amazonas</option>
                                                     <option value="Antioquia">Antioquia</option>
                                                     <option value="ANTIOQUIA">ANTIOQUIA</option>
                                                     <option value="Arauca">Arauca</option>
@@ -1570,8 +1734,8 @@ flex-direction: column;
                                                     <option value="CASANARE">CASANARE</option>
                                                     <option value="Cauca">Cauca</option>
                                                     <option value="CAUCA">CAUCA</option>
-                                                    <option value="CESAR">CESAR</option>
                                                     <option value="Cesar">Cesar</option>
+                                                    <option value="CESAR">CESAR</option>
                                                     <option value="Chocó">Chocó</option>
                                                     <option value="CHOCÓ">CHOCÓ</option>
                                                     <option value="Córdoba">Córdoba</option>
@@ -1580,12 +1744,12 @@ flex-direction: column;
                                                     <option value="CUNDINAMARCA">CUNDINAMARCA</option>
                                                     <option value="Guainía">Guainía</option>
                                                     <option value="GUAINÍA">GUAINÍA</option>
-                                                    <option value="Guaviare">Guaviare</option>
                                                     <option value="GUAVIARE">GUAVIARE</option>
+                                                    <option value="Guaviare">Guaviare</option>
                                                     <option value="Huila">Huila</option>
                                                     <option value="HUILA">HUILA</option>
-                                                    <option value="La Guajira">La Guajira</option>
                                                     <option value="LA GUAJIRA">LA GUAJIRA</option>
+                                                    <option value="La Guajira">La Guajira</option>
                                                     <option value="Magdalena">Magdalena</option>
                                                     <option value="MAGDALENA">MAGDALENA</option>
                                                     <option value="Meta">Meta</option>
@@ -1602,12 +1766,12 @@ flex-direction: column;
                                                     <option value="RISARALDA">RISARALDA</option>
                                                     <option value="SAN ANDRÉS">SAN ANDRÉS</option>
                                                     <option value="San Andrés y Providencia">San Andrés y Providencia</option>
-                                                    <option value="SANTANDER">SANTANDER</option>
                                                     <option value="Santander">Santander</option>
+                                                    <option value="SANTANDER">SANTANDER</option>
                                                     <option value="SUCRE">SUCRE</option>
                                                     <option value="Sucre">Sucre</option>
-                                                    <option value="TOLIMA">TOLIMA</option>
                                                     <option value="Tolima">Tolima</option>
+                                                    <option value="TOLIMA">TOLIMA</option>
                                                     <option value="VALLE DEL CAUCA">VALLE DEL CAUCA</option>
                                                     <option value="Valle del Cauca">Valle del Cauca</option>
                                                     <option value="Vaupés">Vaupés</option>
@@ -1689,437 +1853,6 @@ flex-direction: column;
             }
         }
 </script>
-    <style>
-        .customer-popup-login {
-            display: none;
-        }
-        .or-another-selection {
-            display: inline-block;
-            padding-right: 5px;
-        }
-        .customer-popup-register {
-            display: none;
-        }
-        @media(max-width: 767px) {
-            .or-another-selection {
-                display: block;
-                text-align: center;
-                margin-bottom: 5px;
-            }
-        }
-    </style>
-    <div id="customer-popup-login" class="customer-popup-login">
-        <div class="block block-customer-login">
-            <div class="messages"></div>    
-            <div class="block-content" id="content-forgot">
-                <div class="block-container" id="forgot-pass" style="display:none">
-
-    <div class="block col-mp mp-12">
-        <div class="block-content">
-            <svg class="form-header-icon" viewBox="0 0 341 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M170.343 138.223C207.96 138.223 238.455 107.729 238.455 70.1117C238.455 32.4946 207.96 2 170.343 2C132.726 2 102.231 32.4946 102.231 70.1117C102.231 107.729 132.726 138.223 170.343 138.223Z" stroke="white" stroke-width="3" stroke-miterlimit="10"/>
-                <path d="M182.52 56.6583L195.163 44.1485M202.388 37L195.163 44.1485L202.388 37ZM167.674 71.3484C169.539 73.1693 171.021 75.3374 172.036 77.7276C173.051 80.1179 173.578 82.6832 173.587 85.2759C173.596 87.8685 173.086 90.4372 172.087 92.8342C171.089 95.2311 169.621 97.4089 167.768 99.2422C165.915 101.076 163.714 102.528 161.292 103.516C158.869 104.504 156.273 105.009 153.653 105C151.033 104.991 148.44 104.47 146.024 103.466C143.609 102.461 141.417 100.994 139.577 99.1488C135.958 95.4412 133.955 90.4755 134.001 85.3211C134.046 80.1668 136.135 75.2362 139.819 71.5914C143.503 67.9466 148.486 65.8792 153.695 65.8344C158.904 65.7896 163.923 67.771 167.67 71.352L167.674 71.3484ZM167.674 71.3484L182.52 56.6583L167.674 71.3484ZM182.52 56.6583L193.357 67.381L206 54.8712L195.163 44.1485L182.52 56.6583Z" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M0.200073 80.9077H102.368" stroke="white" stroke-width="3" stroke-miterlimit="10"/>
-                <path d="M238.032 80.9077H340.2" stroke="white" stroke-width="3" stroke-miterlimit="10"/>
-            </svg>
-
-            <form class="form-password-forget" id="form-password-forget" data-mage-init='{"validation":{}}'>
-                <fieldset class="fieldset" data-hasrequired="* Campos obligatorios">
-                    <div class="field note" style="margin-top: 20px"><span>Si olvidaste tu contraseña, escribe tu correo electrónico para restablecerla.</span></div>
-                    <div class="field email required">
-                        <label for="email_address" class="label"><span>Correo electrónico</span></label>
-                        <div class="form-icon">
-                            <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M5.8 5.7998H28.2C29.74 5.7998 31 7.0598 31 8.5998V25.3998C31 26.9398 29.74 28.1998 28.2 28.1998H5.8C4.26 28.1998 3 26.9398 3 25.3998V8.5998C3 7.0598 4.26 5.7998 5.8 5.7998Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M31 8.59961L17 18.3996L3 8.59961" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <div class="control">
-                            <input type="email" name="email" alt="email" id="email_address" class="input-text"
-                                   value=""
-                                   data-validate="{required:true, 'validate-email':true}"
-                                   placeholder="Correo electrónico"/>
-                        </div>
-                    </div>
-                    <div class="forgot-buttons">
-                        <div class="actions-toolbar back-button">
-                            <div class="primary">
-                                <a class="action back" id="go-back" href="#">
-                                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M3.8125 6.625L1 3.8125L3.8125 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M10 10V6.0625C10 5.46576 9.76295 4.89347 9.34099 4.47151C8.91903 4.04955 8.34674 3.8125 7.75 3.8125H1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                    <span>Volver</span>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="actions-toolbar main-button">
-                            <div class="primary">
-                                <button type="button" id="send-forgot" class="action send primary">
-                                    <span>
-                                        Enviar                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>            
-                </fieldset>
-
-            </form>
-        </div>
-    </div>
-</div>
-            </div>
-            <div class="block-content" id="content-login" aria-labelledby="block-customer-popup-login-heading">
-                <svg class="form-header-icon" width="100%" viewBox="0 0 500 204" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M250 202C305.228 202 350 157.228 350 102C350 46.7715 305.228 2 250 2C194.771 2 150 46.7715 150 102C150 157.228 194.771 202 250 202Z" stroke="white" stroke-width="5" stroke-miterlimit="10"/>
-                    <path d="M0.200073 117.85H150.2" stroke="white" stroke-width="5" stroke-miterlimit="10"/>
-                    <path d="M349.38 117.85H499.38" stroke="white" stroke-width="5" stroke-miterlimit="10"/>
-                    <circle cx="249.5" cy="82.5" r="22.5" stroke="white" stroke-width="5"/>
-                    <path d="M238.268 102.5C220.246 107.426 207 123.916 207 143.5H292C292 123.916 278.754 107.426 260.732 102.5" stroke="white" stroke-width="5"/>
-                </svg>
-
-                <form class="form form-login"
-                      action="https://tienda.partequipos.com/customer/ajax/login/"
-                      method="post"
-                      id="customer-popup-login-form"
-                      data-mage-init='{"validation":{}}'>
-                    <input name="form_key" type="hidden" value="49l30mBhAPpUmWVN" />                    <input type="hidden" name="redirect_url" value="https://tienda.partequipos.com/catalogsearch/result/index/?q=6p7773" />
-                    <fieldset class="fieldset login" data-hasrequired="* Campos obligatorios">                        
-                        
-                        <div class="field email required">
-                            <label class="label" for="email"><span>Correo electrónico</span></label>
-                            <div class="form-icon">
-                                <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M2.08223 32.3701C1.46223 32.3701 0.962244 31.8401 1.00224 31.2201C1.59224 23.1601 8.31222 16.8101 16.5122 16.8101C24.7222 16.8101 31.4422 23.1601 32.0222 31.2201C32.0722 31.8401 31.5722 32.3701 30.9422 32.3701H2.08223Z" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
-                                    <path d="M16.5223 16.78C20.8798 16.78 24.4123 13.2475 24.4123 8.89001C24.4123 4.53249 20.8798 1 16.5223 1C12.1648 1 8.63232 4.53249 8.63232 8.89001C8.63232 13.2475 12.1648 16.78 16.5223 16.78Z" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
-                                </svg>
-                            </div>
-                            <div class="control">
-                                <input name="username" placeholder="Usuario" value=""  autocomplete="off" id="email-login" type="email" class="input-text" title="Correo electrónico" data-validate="{required:true, 'validate-email':true}">
-                            </div>
-                        </div>
-                        <div class="field password required">
-                            <label for="pass" class="label"><span>Contraseña</span></label>
-                            <div class="form-icon">
-                                <svg width="27" height="33" viewBox="0 0 27 33" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <rect x="1" y="14" width="25" height="18" rx="2" stroke="white" stroke-width="2"/>
-                                    <circle cx="14" cy="21" r="3" stroke="white" stroke-width="2"/>
-                                    <path d="M14 24V29.5" stroke="white" stroke-width="2"/>
-                                    <path d="M14 1C9.02944 1 5 5.09577 5 10.1481V14H23V10.1481C23 5.09577 18.9706 1 14 1Z" stroke="white" stroke-width="2"/>
-                                </svg>
-                            </div>
-                            <div class="control">
-                                <input name="password" placeholder="********" type="password"  autocomplete="off" class="input-text" id="pass-login" title="Contraseña" data-validate="{required:true}" >
-                            </div>
-                        </div>
-                        <div class="mandatory-note">*Campos obligatorios</div>
-                        <div class="actions-toolbar main-button">
-                            <div class="primary"><button type="submit" class="action login primary" name="send" id="send2-login"><span>Iniciar sesión</span></button></div>
-                        </div>
-                        <div class="form-aditional-fields">
-                            <div class="control remember-field">
-                                <input type="checkbox" id="cbox2" value="second_checkbox">
-                                <label for="cbox2">
-                                    Recordarme                                </label>
-                            </div>
-                            <div class="secondary forgot-pass"><a class="action remind" ><span>¿Olvidó su contraseña?</span></a></div>
-                        </div>
-                        <div class="field note"><span>Para poder comprar debes tener una cuenta de cliente</span></div>
-                        <div class="actions-toolbar second-button">
-                            <div class="secondary"><a class="action remind" href="javascript:void(0);" id="customer-popup-registration"><span>Regístrate</span></a></div>
-                        </div>
-                        <div class="field note"><span>o <a href="https://tienda.partequipos.com/contact/">contáctanos.</a></span></div>
-                    </fieldset>
-                </form>
-            </div>
-        </div>
-        <script type="text/x-magento-init">
-            {
-                "#customer-popup-login": {
-                    "Aventi_CustomerAccount/js/action/customer-authentication-popup": {
-                        "popupTitle": "Iniciar sesión",
-                        "innerWidth": "700"
-                    }
-                }
-            }
-        </script>
-    </div> 
-
-
-    <style>
-        .customer-popup-register {
-            display: none;
-        }
-    </style>
-    <div id="customer-popup-register" class="customer-popup-register">
-        
-<div class="block-content" aria-labelledby="block-customer-popup-login-heading">
-    <svg class="form-header-icon" width="100%" viewBox="0 0 500 204" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M250 202C305.228 202 350 157.228 350 102C350 46.7715 305.228 2 250 2C194.771 2 150 46.7715 150 102C150 157.228 194.771 202 250 202Z" stroke="white" stroke-width="3" stroke-miterlimit="10"/>
-        <circle cx="249.5" cy="82.5" r="22.5" stroke="white" stroke-width="3"/>
-        <path d="M238.268 102.5C220.246 107.426 207 123.916 207 143.5H292C292 123.916 278.754 107.426 260.732 102.5" stroke="white" stroke-width="3"/>
-    </svg>
-    <form id="form-register"
-          action="https://tienda.partequipos.com/customer/index/save/"
-          class="form_register js-submit-ajax">
-    
-            <fieldset class="fieldset">
-                <!-- <div class="row">
-                    <div class="col-lg-12">
-                        <p>Como cliente de Partequipos vas a poder <strong>comprar desde nuestra tienda  online.</strong> Completa el
-                           siguiente formulario y muy pronto nos conectaremos contigo para terminar el proceso.</p>
-                    </div>
-                </div> -->
-    
-                <div class="field name required">
-                    <label class="label">Nombre Completo o razón social</label>
-                    <div class="form-icon">
-                        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M23.1841 9.96767C23.1841 13.7088 20.1514 16.7416 16.4102 16.7416C12.6691 16.7416 9.63635 13.7088 9.63635 9.96767C9.63635 6.22657 12.6691 3.19385 16.4102 3.19385C20.1514 3.19385 23.1841 6.22657 23.1841 9.96767Z" stroke="white" stroke-width="2"/>
-                            <path d="M26.3286 27.0699V27.0721C26.3286 27.4898 26.1503 27.902 25.7023 28.3263C25.2391 28.765 24.5226 29.1774 23.5697 29.5284C21.6676 30.229 19.0632 30.5983 16.4062 30.5983C13.7493 30.5983 11.1449 30.229 9.24277 29.5284C8.28992 29.1774 7.57338 28.765 7.1102 28.3263C6.66221 27.902 6.48389 27.4898 6.48389 27.0721C6.48389 24.0495 7.83507 21.3453 9.97263 19.527C11.8123 20.7666 14.0257 21.4893 16.4102 21.4893C18.7939 21.4893 21.0065 20.7671 22.8458 19.5284C24.9804 21.3545 26.3352 24.0586 26.3286 27.0699Z" stroke="white" stroke-width="2"/>
-                        </svg>
-
-                    </div>
-                    <div class="control">
-                        <input name="nombre" placeholder="Nombre completo o razón social" type="text" class="form-control" required="required">
-                    </div>
-                </div>
-    
-                <div class="form-group">
-                    <div class="field id-type required">
-                        <label class="label">Tipo Identificación</label>
-                        <div class="form-icon">
-                            <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M15.6258 23.6104C16.3901 24.4307 17.6099 24.4307 18.3742 23.6104L29.0561 12.1453C29.9072 11.2318 29.8871 9.88011 29.2239 9.16827C28.6095 8.50879 27.4685 8.46281 26.6434 9.34841M15.6258 23.6104L26.6434 9.34841M15.6258 23.6104L4.94385 12.1453C4.0927 11.2318 4.11278 9.88011 4.77599 9.16827C5.39042 8.50879 6.53144 8.46281 7.35655 9.34841L14.1624 16.6533C15.7176 18.3225 18.2823 18.3225 19.8375 16.6533L19.1445 16.0077L19.8375 16.6533L26.6434 9.34841M15.6258 23.6104L25.9117 8.66674L26.6434 9.34841" stroke="white" stroke-width="2"/>
-                            </svg>
-
-                        </div>
-                        <div class="control">
-                            <select name="tipo_identificacion" id="" class="form-control" required>
-                                <option hidden selected disabled value="">Tipo de documento</option>
-                                <option value="Cédula">Cédula</option>
-                                <option value="Cédula extranjería">Cédula extranjería</option>
-                                <option value="Pasaporte">Pasaporte</option>
-                                <option value="NIT">NIT</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="field id-number">
-                        <label class="label">Número de identificación</label>
-                        <div class="form-icon">
-                            <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M30.9864 24.0606V24.0604C30.9864 22.9435 30.0926 22.006 28.9508 22.006H17C15.8581 22.006 14.9644 22.9435 14.9644 24.0604C14.9644 25.1773 15.8581 26.1148 17 26.1148H28.9508C30.0911 26.1148 30.9861 25.1789 30.9864 24.0606ZM30.9864 19.4336V19.4334C30.9864 18.3165 30.0926 17.379 28.9508 17.379H17C15.8581 17.379 14.9644 18.3165 14.9644 19.4334C14.9644 20.5503 15.8581 21.4877 17 21.4877H28.9508C30.0911 21.4877 30.9861 20.5518 30.9864 19.4336ZM30.9864 14.8066V14.8063C30.9864 13.8209 30.2907 12.9752 29.3427 12.7897C30.29 12.6042 30.9862 11.7587 30.9862 10.7731C30.9862 9.65622 30.0925 8.71875 28.9507 8.71875H4.03991C2.89804 8.71875 2.00432 9.65623 2.00432 10.7731C2.00432 11.89 2.89804 12.8275 4.03991 12.8275H16.4495C15.5835 13.0715 14.9644 13.8768 14.9644 14.8063C14.9644 15.9232 15.8581 16.8607 17 16.8607H28.9508C30.0912 16.8607 30.9861 15.9246 30.9864 14.8066ZM1.38069 7.58057H32.6193C32.8127 7.58057 33 7.74525 33 7.98631V27.1103C33 27.3511 32.8123 27.5161 32.6193 27.5161H1.38069C1.18767 27.5161 1 27.3511 1 27.1103V7.98631C1 7.74555 1.18767 7.58057 1.38069 7.58057ZM12.0847 25.0605C13.417 25.0605 14.4654 23.9657 14.4654 22.6548V16.2122C14.4654 14.9012 13.417 13.8065 12.0847 13.8065H5.42073C4.08938 13.8065 3.04003 14.9009 3.04003 16.2122V22.6548C3.04003 23.966 4.08938 25.0605 5.42073 25.0605H12.0847Z" stroke="white" stroke-width="2"/>
-                            </svg>
-
-                        </div>
-                        <div class="control">
-                            <input name="numero_identificacion" placeholder="Número de identificación" type="text" class="form-control" required="required" maxlength="30">
-                        </div>
-                    </div>
-                </div>
-                <!-- <hr class="first-hr"> -->
-    
-    
-                <div class="field email required">
-                    <label class="label">Correo Eléctronico</label>
-                    <div class="form-icon">
-                        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M22.1234 20.491L28.7309 27.0985H27.7947V27.1064H4.86087L11.4697 20.4912C12.0322 20.9012 12.5081 21.2401 12.8929 21.4916C13.3593 21.8048 13.9336 22.0871 14.5989 22.3664L14.5988 22.3664L14.6086 22.3704C15.3373 22.6673 16.0628 22.8413 16.7805 22.8413H16.7964H16.8123C17.5233 22.8413 18.2505 22.6784 18.9939 22.3664C19.6727 22.0814 20.239 21.7926 20.6941 21.4954C21.0799 21.2434 21.5579 20.9032 22.1234 20.491Z" stroke="white" stroke-width="2"/>
-                            <path d="M8.27752 17.9806L3.53503 22.7231V14.7369C3.56356 14.7563 3.59221 14.7757 3.621 14.7949C5.43838 16.0252 6.98512 17.0883 8.27752 17.9806Z" stroke="white" stroke-width="2"/>
-                            <path d="M29.9974 14.7937L29.9974 14.7937L29.9999 14.792C30.0219 14.777 30.0439 14.762 30.0658 14.7469V22.7231L25.3283 17.9857C26.6722 17.0535 28.2259 15.9895 29.9974 14.7937Z" stroke="white" stroke-width="2"/>
-                            <path d="M3.89375 10.0809L3.89376 10.0809L3.8909 10.0771C3.36809 9.38002 3.1936 8.84126 3.1936 8.45368C3.1936 7.78617 3.36437 7.31337 3.64836 6.95962C3.88299 6.66737 4.21946 6.48389 4.79813 6.48389H28.7948C29.2241 6.48389 29.5882 6.62441 29.951 6.97437C30.2725 7.29822 30.4231 7.66353 30.4231 8.10434C30.4231 8.74544 30.2307 9.37672 29.8035 10.0015C29.3405 10.6788 28.7676 11.2595 28.0716 11.747C25.9759 13.2051 24.2871 14.3769 23.0043 15.267C22.6744 15.4959 22.3713 15.7062 22.0951 15.8979C21.737 16.1455 21.4264 16.3609 21.1607 16.5451C20.8695 16.7469 20.6323 16.9113 20.4456 17.0399L20.4386 17.0447L20.4317 17.0497C20.4064 17.0677 20.3756 17.0895 20.3333 17.1194C20.2921 17.1485 20.243 17.1833 20.1855 17.2244L20.1855 17.2243L20.1754 17.2317C20.1322 17.2634 20.0841 17.2975 20.023 17.3409C20.0109 17.3495 19.9982 17.3585 19.985 17.3679C19.9102 17.4211 19.8233 17.4831 19.7273 17.5539C19.3789 17.8017 19.0939 18.0018 18.8716 18.1552C18.6534 18.3005 18.3947 18.4633 18.0794 18.6511C17.7776 18.8232 17.5373 18.9358 17.3376 19.0006C17.1229 19.0702 16.95 19.0947 16.8282 19.0947H16.8123H16.7964C16.6682 19.0947 16.5035 19.0708 16.2871 19.0006C16.0764 18.9323 15.8346 18.8233 15.5531 18.6557C15.22 18.4575 14.9597 18.2977 14.7597 18.1598L14.7532 18.1553L14.7466 18.1509C14.5244 18.0028 14.2435 17.8057 13.9016 17.5571C13.804 17.485 13.7156 17.4219 13.6396 17.3679C13.6265 17.3585 13.6139 17.3496 13.6018 17.341C13.5406 17.2975 13.4925 17.2634 13.4493 17.2317L13.4493 17.2316L13.4391 17.2244C13.3817 17.1833 13.3325 17.1485 13.2914 17.1194L13.2703 17.1045C13.2385 17.0821 13.2139 17.0646 13.193 17.0497L13.193 17.0497L13.1862 17.0449C12.733 16.7268 12.1766 16.3373 11.5415 15.8927L11.5386 15.8907C11.3041 15.7278 11.0587 15.5577 10.8021 15.3797C10.2302 14.9831 9.60206 14.5476 8.91226 14.0658L8.91125 14.0651C7.98015 13.4165 7.23809 12.9007 6.68235 12.5143C6.12647 12.1279 5.75702 11.871 5.57128 11.7406L5.56251 11.7345L5.5536 11.7285C4.99227 11.3521 4.43633 10.8116 3.89375 10.0809Z" stroke="white" stroke-width="2"/>
-                        </svg>
-
-                    </div>
-                    <div class="control">
-                        <input name="correo_electronico" placeholder="Correo Electrónico" type="email" class="form-control" required="required">
-                    </div>
-                </div>
-    
-                <div class="field phone required">
-                    <label class="label">Número Teléfono</label>
-                    <div class="form-icon">
-                    <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M23.9246 0H10.0753C8.747 0 7.67737 1.11195 7.67737 2.47657V31.5234C7.67737 32.8881 8.747 34 10.0753 34H23.9246C25.2459 34 26.3225 32.8881 26.3225 31.5234V2.47657C26.3225 1.11195 25.2529 0 23.9246 0ZM13.5848 1.50186H20.4221C20.5968 1.50186 20.7367 1.76897 20.7367 2.09388C20.7367 2.42601 20.5968 2.69312 20.4221 2.69312H13.5848C13.41 2.69312 13.2702 2.42601 13.2702 2.09388C13.2702 1.76897 13.41 1.50186 13.5848 1.50186ZM17.0034 31.5523C16.1575 31.5523 15.4724 30.8447 15.4724 29.9711C15.4724 29.0974 16.1575 28.3899 17.0034 28.3899C17.8424 28.3899 18.5275 29.0974 18.5275 29.9711C18.5275 30.8447 17.8424 31.5523 17.0034 31.5523ZM24.5258 26.1372H9.47407V4.1733H24.5258V26.1372Z" fill="white"/>
-                    </svg>
-
-
-                    </div>
-                    <div class="control">
-                        <input name="telefono" placeholder="Número Teléfono" type="tel" class="form-control" required="required" maxlength="20">
-                    </div>
-                </div>
-    
-                <hr>
-    
-                <div class="field department required">
-                    <label class="label">Departamento</label>
-                    <div class="form-icon">
-                        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M15.6258 23.6104C16.3901 24.4307 17.6099 24.4307 18.3742 23.6104L29.0561 12.1453C29.9072 11.2318 29.8871 9.88011 29.2239 9.16827C28.6095 8.50879 27.4685 8.46281 26.6434 9.34841M15.6258 23.6104L26.6434 9.34841M15.6258 23.6104L4.94385 12.1453C4.0927 11.2318 4.11278 9.88011 4.77599 9.16827C5.39042 8.50879 6.53144 8.46281 7.35655 9.34841L14.1624 16.6533C15.7176 18.3225 18.2823 18.3225 19.8375 16.6533L19.1445 16.0077L19.8375 16.6533L26.6434 9.34841M15.6258 23.6104L25.9117 8.66674L26.6434 9.34841" stroke="white" stroke-width="2"/>
-                        </svg>
-                    </div>
-                    <div class="control">
-                        <select name="departamento"  class="form-control js-get-city" required data-children="city">
-                            <option hidden selected disabled value="">Departamento (Seleccione)</option>
-                                                            <option value="Amazonas">Amazonas</option>
-                                                            <option value="AMAZONAS">AMAZONAS</option>
-                                                            <option value="Antioquia">Antioquia</option>
-                                                            <option value="ANTIOQUIA">ANTIOQUIA</option>
-                                                            <option value="Arauca">Arauca</option>
-                                                            <option value="ARAUCA">ARAUCA</option>
-                                                            <option value="Atlántico">Atlántico</option>
-                                                            <option value="ATLÁNTICO">ATLÁNTICO</option>
-                                                            <option value="BOGOTA">BOGOTA</option>
-                                                            <option value="Bolívar">Bolívar</option>
-                                                            <option value="BOLÍVAR">BOLÍVAR</option>
-                                                            <option value="Boyacá">Boyacá</option>
-                                                            <option value="BOYACÁ">BOYACÁ</option>
-                                                            <option value="Caldas">Caldas</option>
-                                                            <option value="CALDAS">CALDAS</option>
-                                                            <option value="Caquetá">Caquetá</option>
-                                                            <option value="CAQUETÁ">CAQUETÁ</option>
-                                                            <option value="Casanare">Casanare</option>
-                                                            <option value="CASANARE">CASANARE</option>
-                                                            <option value="Cauca">Cauca</option>
-                                                            <option value="CAUCA">CAUCA</option>
-                                                            <option value="CESAR">CESAR</option>
-                                                            <option value="Cesar">Cesar</option>
-                                                            <option value="Chocó">Chocó</option>
-                                                            <option value="CHOCÓ">CHOCÓ</option>
-                                                            <option value="Córdoba">Córdoba</option>
-                                                            <option value="CÓRDOBA">CÓRDOBA</option>
-                                                            <option value="Cundinamarca">Cundinamarca</option>
-                                                            <option value="CUNDINAMARCA">CUNDINAMARCA</option>
-                                                            <option value="Guainía">Guainía</option>
-                                                            <option value="GUAINÍA">GUAINÍA</option>
-                                                            <option value="Guaviare">Guaviare</option>
-                                                            <option value="GUAVIARE">GUAVIARE</option>
-                                                            <option value="Huila">Huila</option>
-                                                            <option value="HUILA">HUILA</option>
-                                                            <option value="La Guajira">La Guajira</option>
-                                                            <option value="LA GUAJIRA">LA GUAJIRA</option>
-                                                            <option value="Magdalena">Magdalena</option>
-                                                            <option value="MAGDALENA">MAGDALENA</option>
-                                                            <option value="Meta">Meta</option>
-                                                            <option value="META">META</option>
-                                                            <option value="Nariño">Nariño</option>
-                                                            <option value="NARIÑO">NARIÑO</option>
-                                                            <option value="Norte de Santander">Norte de Santander</option>
-                                                            <option value="NORTE DE SANTANDER">NORTE DE SANTANDER</option>
-                                                            <option value="Putumayo">Putumayo</option>
-                                                            <option value="PUTUMAYO">PUTUMAYO</option>
-                                                            <option value="Quindío">Quindío</option>
-                                                            <option value="QUINDÍO">QUINDÍO</option>
-                                                            <option value="Risaralda">Risaralda</option>
-                                                            <option value="RISARALDA">RISARALDA</option>
-                                                            <option value="SAN ANDRÉS">SAN ANDRÉS</option>
-                                                            <option value="San Andrés y Providencia">San Andrés y Providencia</option>
-                                                            <option value="SANTANDER">SANTANDER</option>
-                                                            <option value="Santander">Santander</option>
-                                                            <option value="SUCRE">SUCRE</option>
-                                                            <option value="Sucre">Sucre</option>
-                                                            <option value="TOLIMA">TOLIMA</option>
-                                                            <option value="Tolima">Tolima</option>
-                                                            <option value="VALLE DEL CAUCA">VALLE DEL CAUCA</option>
-                                                            <option value="Valle del Cauca">Valle del Cauca</option>
-                                                            <option value="Vaupés">Vaupés</option>
-                                                            <option value="VAUPÉS">VAUPÉS</option>
-                                                            <option value="Vichada">Vichada</option>
-                                                            <option value="VICHADA">VICHADA</option>
-                                                    </select>
-                    </div>
-                </div>
-    
-                <div class="field city required">
-                    <label class="label">Ciudad</label>
-                    <div class="form-icon">
-                    <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15.6258 23.6104C16.3901 24.4307 17.6099 24.4307 18.3742 23.6104L29.0561 12.1453C29.9072 11.2318 29.8871 9.88011 29.2239 9.16827C28.6095 8.50879 27.4685 8.46281 26.6434 9.34841M15.6258 23.6104L26.6434 9.34841M15.6258 23.6104L4.94385 12.1453C4.0927 11.2318 4.11278 9.88011 4.77599 9.16827C5.39042 8.50879 6.53144 8.46281 7.35655 9.34841L14.1624 16.6533C15.7176 18.3225 18.2823 18.3225 19.8375 16.6533L19.1445 16.0077L19.8375 16.6533L26.6434 9.34841M15.6258 23.6104L25.9117 8.66674L26.6434 9.34841" stroke="white" stroke-width="2"/>
-                    </svg>
-
-                    </div>
-                    <div class="control">
-                        <select name="Ciudad"  class="form-control" id="city" required>
-                            <option hidden selected disabled value="">Ciudad (Seleccione)</option>
-                        </select>
-                    </div>
-                </div>
-    
-                <div class="field address required">
-                    <label class="label">Dirección</label>
-                    <div class="form-icon">
-                        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M17.2295 26.3901C16.9212 26.7246 16.648 27.0117 16.422 27.2446C16.1942 27.0058 15.9182 26.7108 15.6062 26.3669C14.6929 25.36 13.4768 23.9392 12.263 22.2822C9.79305 18.9105 7.49731 14.7785 7.49731 11.2202C7.49731 4.01089 12.5467 1 16.4152 1C18.3699 1 20.5985 1.71986 22.33 3.33405C24.0407 4.92882 25.3331 7.45903 25.3331 11.2202C25.3331 14.8835 23.0345 19.0174 20.5696 22.3566C19.3568 23.9995 18.1419 25.4 17.2295 26.3901ZM10.4126 9.71934C10.4126 13.035 13.0995 15.722 16.4152 15.722C19.7308 15.722 22.4178 13.035 22.4178 9.71934C22.4178 6.40367 19.7308 3.71689 16.4152 3.71689C13.0996 3.71689 10.4126 6.40367 10.4126 9.71934Z" stroke="white" stroke-width="2"/>
-                            <path d="M16.4232 31.6274L17.1127 32.3517L16.9055 32.549H28.7932L24.5918 26.0923H22.6293C21.2604 27.8816 19.9327 29.3968 18.9251 30.4861C18.3838 31.0713 17.9337 31.5349 17.6175 31.8534C17.4594 32.0127 17.3348 32.1358 17.2489 32.2198C17.2059 32.2618 17.1727 32.2941 17.1498 32.3162L17.1232 32.3417L17.116 32.3486L17.1138 32.3507L17.1132 32.3513L17.1129 32.3515C17.1128 32.3516 17.1127 32.3517 16.4232 31.6274ZM16.4232 31.6274L15.7265 32.3447L15.9368 32.549H4.03884L8.24635 26.0923H10.2793C11.6346 27.8723 12.9454 29.3853 13.9395 30.475C14.4739 31.0608 14.9178 31.5255 15.2294 31.845C15.3853 32.0048 15.5081 32.1283 15.5927 32.2126C15.6349 32.2547 15.6677 32.287 15.6902 32.3092L15.7162 32.3347L15.7234 32.3417L15.7254 32.3437L15.7261 32.3443L15.7263 32.3446C15.7264 32.3447 15.7265 32.3447 16.4232 31.6274Z" stroke="white" stroke-width="2"/>
-                        </svg>
-
-                    </div>
-                    <div class="control">
-                        <input placeholder="Dirección" name="direccion" type="text" class="form-control" required="required" maxlength="150">
-                    </div>
-                </div>
-                <div class="field note">
-                    <span>Al convertirte en miembro aceptas las <strong><a href="https://tienda.partequipos.com/contact/">politicas de tratamientos de datos.</a></strong></span>
-                </div>
-
-                <!-- Google reCAPTCHA -->
-                <div class="field recaptcha required">
-                    <div class="control">
-                        <div id="recaptcha-register" class="g-recaptcha"></div>
-                        <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response-register">
-                    </div>
-                </div>
-
-                <div class="actions-toolbar main-button">
-                    <div class="primary">
-                        <button type="submit" class="action login primary ">
-                            <span>Registrarme como cliente</span>
-                        </button>
-                    </div>
-                </div>
-
-            </fieldset>
-    
-            <div id="form-register-modal" class="form_modal">
-                <div class="form_modal_logo"></div>
-                <div class="message">Pronto nos comunicaremos contigo para terminar el proceso</div>
-                <button type="button" class="js-close-modal">Terminar y cerrar</button>
-            </div>
-
-    </form>
-</div>
-
-<script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoadCallback&render=explicit" async defer></script>
-<script>
-    var recaptchaWidgetRegister;
-    var onRecaptchaLoadCallback = function() {
-        if (typeof grecaptcha !== 'undefined' && document.getElementById('recaptcha-register')) {
-            recaptchaWidgetRegister = grecaptcha.render('recaptcha-register', {
-                'sitekey': '6LeKDkwsAAAAAGZLW8rYjcBBKuwqpvowPb-BERMH',
-                'callback': function(response) {
-                    document.getElementById('g-recaptcha-response-register').value = response;
-                },
-                'expired-callback': function() {
-                    document.getElementById('g-recaptcha-response-register').value = '';
-                }
-            });
-        }
-    };
-</script>
-        <script type="text/x-magento-init">
-            {
-                "#customer-popup-register": {
-                    "Aventi_CustomerAccount/js/action/customer-authentication-popup": {
-                        "popupTitle": "Regístrate",
-                        "innerWidth": "700"
-                    }
-                }
-            }
-        </script>
-    </div>
 <style>
     /* Hide registration link in header */
     .customer-register-link,

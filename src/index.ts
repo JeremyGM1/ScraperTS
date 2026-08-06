@@ -31,42 +31,48 @@ async function main() {
 
   await app.register(cors);
 
-  app.post<{ Body: SearchBody }>('/search', async (req, reply) => {
-    const refsToSearch = normalizeRefs(req.body.references);
-    const selectedScrapers = normalizeRefs(req.body.scrapers);
+  const scraperMap: Record<string, (ref: string, log: any) => Promise<any>> = {
+      retrotrac: (ref, log) => runRetrotrac(browser, envConfig.retrotrac.email, envConfig.retrotrac.password, ref, log),
+      parteequipos: (ref, log) => runParteequipos(browser, envConfig.parteequipos.email, envConfig.parteequipos.password, ref, log),
+      servi: (ref, log) => runServi(browser, envConfig.servi.email, envConfig.servi.password, ref, log),
+      agrocosta: (ref, log) => runAgrocosta(browser, envConfig.agrocosta.email, envConfig.agrocosta.password, ref, log),
+      catekom: (ref, log) => runCatekom(browser, envConfig.catekom.email, envConfig.catekom.password, ref, log),
+    };
 
-    if (refsToSearch.length === 0) {
-      return reply.status(400).send({ error: 'At least one reference is required' });
-    }
+    function validateSearchBody(req: { body: SearchBody }, reply: any) {
+      const refsToSearch = normalizeRefs(req.body.references);
+      const selectedScrapers = normalizeRefs(req.body.scrapers);
 
-    if (selectedScrapers.length === 0) {
-      return reply.status(400).send({ error: 'At least one scraper must be selected' });
-    }
-
-    try {
-      const scraperMap: Record<string, (ref: string) => Promise<any>> = {
-        retrotrac: (ref) => runRetrotrac(browser, envConfig.retrotrac.email, envConfig.retrotrac.password, ref, req.log),
-        parteequipos: (ref) => runParteequipos(browser, envConfig.parteequipos.email, envConfig.parteequipos.password, ref, req.log),
-        servi: (ref) => runServi(browser, envConfig.servi.email, envConfig.servi.password, ref, req.log),
-        agrocosta: (ref) => runAgrocosta(browser, envConfig.agrocosta.email, envConfig.agrocosta.password, ref, req.log),
-        catekom: (ref) => runCatekom(browser, envConfig.catekom.email, envConfig.catekom.password, ref, req.log),
-      };
-
+      if (refsToSearch.length === 0) {
+       reply.status(400).send({ error: 'At least one reference is required' });
+       return null;
+      }
+  
+      if (selectedScrapers.length === 0) {
+        reply.status(400).send({ error: 'At least one scraper must be selected' });
+        return null;
+      }
+      
       const invalidScrapers = selectedScrapers.filter((name) => !scraperMap[name.toLowerCase()]);
       const validScrapers = selectedScrapers.filter((name) => scraperMap[name.toLowerCase()]);
 
-      if (invalidScrapers.length > 0) {
-        req.log.warn({ invalidScrapers }, "Unknown scraper names requested");
-      }
-
       if (validScrapers.length === 0) {
-        return reply.status(400).send({ error: 'No valid scrapers were selected' });
+        reply.status(400).send({ error: 'No valid scrapers were selected' });
+        return null;
       }
 
+      return { refsToSearch, validScrapers, invalidScrapers };
+    }
+
+  app.post<{ Body: SearchBody }>('/search', async (req, reply) => {
+    const parsed = validateSearchBody(req, reply);
+    if(!parsed) return;
+    const { refsToSearch, validScrapers, invalidScrapers } = parsed;
+    try {
       const results = await Promise.all(
         refsToSearch.map(async (reference) => {
           const scraperResults = await Promise.allSettled(
-            validScrapers.map((name) => scraperMap[name.toLowerCase()](reference))
+            validScrapers.map((name) => scraperMap[name.toLowerCase()](reference, req.log))
           );
 
           return {
@@ -90,9 +96,63 @@ async function main() {
         ...(invalidScrapers.length > 0 && { warnings: { unknownScrapers: invalidScrapers } }),
       });
     } catch (err) {
-      req.log.error({ err, refsToSearch, selectedScrapers }, "Error occurred during scraping");
+      req.log.error({ err, refsToSearch, selectedScrapers: validScrapers }, "Error occurred during scraping");
       return reply.status(500).send({ error: 'An error occurred during scraping' });
     }
+  });
+
+  app.post<{ Body: SearchBody }>("/search/stream", async (req, reply) => {
+    const parsed = validateSearchBody(req, reply);
+    if (!parsed) return;
+    const { refsToSearch, validScrapers, invalidScrapers } = parsed;
+    
+    const headers = {
+      ...reply.getHeaders(),
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      "Connection": "keep-alive",
+    };
+
+    for(const [key, value] of Object.entries(headers)) {
+      if (value != undefined) {
+        reply.raw.setHeader(key, value);
+      }
+    }
+
+    reply.raw.writeHead(200);
+
+    const send = (event: string, data: unknown) => {
+      reply.raw.write(`event: ${event}\n`);
+      reply.raw.write(`data: ${JSON.stringify(data)}\n\n`);
+    };
+
+    if (invalidScrapers.length > 0) {
+      send("warning", { unknownScrapers: invalidScrapers })
+    }
+
+    const tasks = refsToSearch.flatMap((reference) =>
+      validScrapers.map((scraperName) => ({ reference, scraperName }))
+    );
+
+    await Promise.allSettled(
+      tasks.map(async ({ reference, scraperName }) => {
+        try{
+          const data = await scraperMap[scraperName.toLowerCase()](reference, req.log);
+          send("result", { reference, scraper: scraperName.toLowerCase(), status: "ok", data});        
+        } catch(err){
+          req.log.warn({ scraperName, reference, err }, "Error occurred while scraping");
+          send("result", {
+            reference,
+            scraper: scraperName.toLowerCase(),
+            status: "error",
+            error: err instanceof Error ? err.message : String(err)
+          });
+        }
+      })
+    );
+
+    send("done", {});
+    reply.raw.end();
   });
 
   const port = Number(process.env.PORT) || 3000;

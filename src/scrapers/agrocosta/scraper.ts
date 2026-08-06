@@ -40,7 +40,7 @@ export async function run(
         log.info({ scraper: "Agrocosta", refId, count: results.length, responseTime: startTime - Date.now() }, "Scrape complete");
         return results;
     } catch (e) {
-        log.error({ scraper: "Agrocosta", refId, e, responseTime: startTime - Date.now() }, "Error extracting product");
+        log.error({ scraper: "Agrocosta", refId, e, responseTime: Date.now() - startTime }, "Error extracting product");
         return null;
     }
 }
