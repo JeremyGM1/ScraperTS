@@ -21,9 +21,12 @@ export async function run(
   try {
     const referenceToSearch = typeof refId === "string" ? refId.trim() : refId;
 
-    let response = await searchProduct(context, referenceToSearch, log);
-    
-    if (!response) {
+    let response;
+
+    try {
+      response = await searchProduct(context, referenceToSearch, log);
+    } catch (e) {
+      log.info({ scraper: "retrotrac", refId }, "Initial request failed, re-authenticating...");
       await performLogin(context, sessionPath, userEmail, userPassword, log);
       response = await searchProduct(context, referenceToSearch, log);
     }
@@ -33,11 +36,6 @@ export async function run(
       response = await searchProduct(context, referenceToSearch, log);
     }
 
-    if (!response) {
-      log.warn({ scraper: "retrotrac", refId }, "No response received");
-      return [];
-    }
-
     const json = await response.json();
     const result = mapRetrotracItemsToProducts(json.items ?? []);
 
@@ -45,7 +43,7 @@ export async function run(
     return result;
   } catch (e) {
     log.error({ scraper: "retrotrac", refId, err: e, responseTime: Date.now() - startTime }, "Unexpected error");
-    return [];
+    throw e instanceof Error ? e : new Error(String(e));
   } finally {
     await context.close();
   }
