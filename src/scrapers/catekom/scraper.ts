@@ -36,10 +36,13 @@ export async function run(
 
     await page.goto(config.searchURL);
 
-    const responsePromise = page.waitForResponse(
-      (response) =>
-        response.url().includes("/DAF/Service.asmx/GetPage") &&
-        response.request().method() === "POST"
+    const responsePromise = page.waitForResponse((response) => {
+        if (!response.url().includes("/DAF/Service.asmx/GetPage") || response.request().method() !== "POST") {
+          return false;
+        }
+        const postData = response.request().postData() ?? "";
+        return postData.toLocaleLowerCase().includes(refId.toLocaleLowerCase());
+      }
     );
 
     await page.fill("input#ctl00_PageContentPlaceHolder_view1Extender_QuickFind", refId);
@@ -48,7 +51,7 @@ export async function run(
     const response = await responsePromise;
     if (!response.ok()) {
       log.error({ scraper: "Catekom", refId, status: response.status() }, "GetPage request failed.");
-      return null;
+      throw new Error(`GetPage request failed with status ${response.status()}`);
     }
 
     const json: IGetPageResponse = await response.json();
@@ -73,9 +76,9 @@ export async function run(
 
     log.info({ scraper: "Catekom", refId, count: results.length, responseTime: Date.now() - startTime   }, "Scrape complete");
     return results;
-  } catch (e) {
-    log.error({ scraper: "Catekom", refId, e, responseTime: Date.now() - startTime }, "Error fetching product data");
-    return null;
+  } catch (err) {
+    log.error({ scraper: "Catekom", refId, err, responseTime: Date.now() - startTime }, "Error fetching product data");
+    throw err instanceof Error ? err : new Error(String(err));
   } finally {
     await context.close();
   }

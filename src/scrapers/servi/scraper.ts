@@ -24,7 +24,7 @@ export async function run(
     const internalId = await getInternalId(context, refId);
     if (!internalId) {
       log.warn({ scraper: "Servitractor", refId }, "Could not retrieve internal ID for reference");
-      return [];
+      throw new Error("Could not retrieve internal ID for reference");
     }
 
     const data = await fetchResults(context, internalId);
@@ -39,9 +39,9 @@ export async function run(
 
     log.info({ scraper: "Servitractor", refId, count: results.length, responseTime: Date.now() - startTime }, "Scrape completed");
     return results;
-  } catch (e) {
-    log.error({ scraper: "Servitractor", refId, err: e, responseTime: Date.now() - startTime });
-    return null;
+  } catch (err) {
+    log.error({ scraper: "Servitractor", refId, err: err, responseTime: Date.now() - startTime });
+    throw err instanceof Error ? err : new Error(String(err));
   } finally {
     await context.close();
   }

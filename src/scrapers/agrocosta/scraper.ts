@@ -27,7 +27,7 @@ export async function run(
 
             if (loggedOut) {
                 log.error({ scraper: "Agrocosta", refId }, "Still not authenticated after re-login.")
-                return null;
+                throw new Error("Still not authenticated after re-login");
             }
         }
 
@@ -37,10 +37,10 @@ export async function run(
         }
 
         const results = parseProducts(html);
-        log.info({ scraper: "Agrocosta", refId, count: results.length, responseTime: startTime - Date.now() }, "Scrape complete");
+        log.info({ scraper: "Agrocosta", refId, count: results.length, responseTime: Date.now() - startTime }, "Scrape complete");
         return results;
-    } catch (e) {
-        log.error({ scraper: "Agrocosta", refId, e, responseTime: Date.now() - startTime }, "Error extracting product");
-        return null;
+    } catch (err) {
+        log.error({ scraper: "Agrocosta", refId, err, responseTime: Date.now() - startTime }, "Error extracting product");
+        throw err instanceof Error ? err : new Error(String(err));
     }
 }

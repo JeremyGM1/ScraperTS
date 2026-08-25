@@ -18,6 +18,7 @@ export async function fetchSearchPage(context: BrowserContext, refId: string, lo
   
   if (!response.ok()) {
     log.warn({ scraper: "Parte Equipos", refId, status: response.status() }, "Search page fetch failed");
+    throw new Error(`Search page fetch failed with status  ${response.status()}`);
   }
 
   return await response.text();

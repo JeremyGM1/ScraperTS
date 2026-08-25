@@ -55,7 +55,7 @@ export async function run(
     return results;
   } catch (err) {
     log.error({ scraper: "Parte Equipos", refId, err: err, responseTime: Date.now() - startTime });
-    return [];
+    throw err instanceof Error ? err : new Error(String(err));
   } finally {
     await context.close();
   }

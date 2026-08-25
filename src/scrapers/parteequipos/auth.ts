@@ -22,11 +22,11 @@ export async function performLogin(
   await page.click("a.customer-login-link");
   await page.waitForSelector("#email-login", { timeout: 15000 });
 
-  await page.fill("#email-login", userEmail); 
+  await page.fill("#email-login", userEmail);
   await page.fill("#pass-login", userPassword);
 
   try {
-    page.click("#send2-login");
+    await page.click("#send2-login");
     
     await page.waitForSelector("a.customer-login-link", { state: "hidden", timeout: 30000});
     await page.waitForLoadState("networkidle");
