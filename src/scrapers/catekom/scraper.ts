@@ -4,15 +4,8 @@ import { FastifyBaseLogger } from "fastify";
 import { ICatekomProduct } from "../../types/catekom_product";
 import { isLoginPageVisible } from "../../helpers/is_logged";
 import { login } from "./auth";
+import { mapCatekomRows, IGetPageData } from "./mapper";
 import fs from "fs";
-
-interface IGetPageResponse {
-  d: {
-    Fields: { Name: string }[];
-    Rows: unknown[][];
-    TotalRowCount: number;
-  };
-}
 
 export async function run(
   browser: Browser,
@@ -54,25 +47,13 @@ export async function run(
       throw new Error(`GetPage request failed with status ${response.status()}`);
     }
 
-    const json: IGetPageResponse = await response.json();
+    const json: IGetPageData = await response.json();
 
     if (json.d.TotalRowCount === 0) {
       return [];
     }
 
-    const fieldNames = json.d.Fields.map((f) => f.Name);
-
-    const results: ICatekomProduct[] = json.d.Rows.map((row) => {
-      const record = Object.fromEntries(fieldNames.map((name, i) => [name, row[i]]));
-      return {
-        Referencia: String(record.Cod_Producto ?? ""),
-        Nombre: String(record.Descripcion ?? ""),
-        Marca: String(record.Proveedor_Producto ?? ""),
-        Precio: String(record.ventas_minimo ?? ""),
-        Inventario: Number(record.Cantidad ?? 0),
-        Bodega: String(record.Cod_Emp ?? ""),
-      };
-    });
+    const results: ICatekomProduct[] = mapCatekomRows(json);
 
     log.info({ scraper: "Catekom", refId, count: results.length, responseTime: Date.now() - startTime   }, "Scrape complete");
     return results;
