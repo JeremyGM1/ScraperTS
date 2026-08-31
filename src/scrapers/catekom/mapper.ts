@@ -18,7 +18,7 @@ export function mapCatekomRows(data: IGetPageData): ICatekomProduct[] {
             Nombre: String(record.Descripcion ?? ""),
             Marca: String(record.Proveedor_Producto ?? ""),
             Precio: String(record.ventas_minimo ?? ""),
-            Inventario: Number(record.Cantidad),
+            Inventario: Number(record.Cantidad ?? 0),
             Bodega: String(record.Cod_Emp ?? ""),
         };
     });
