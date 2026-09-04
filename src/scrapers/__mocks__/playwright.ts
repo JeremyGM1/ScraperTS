@@ -12,7 +12,7 @@ interface MockResponseOptions {
 export function createMockResponse(options: MockResponseOptions = {}) {
     const {
         ok = true,
-        status = 2000,
+        status = 200,
         url = 'http://179.33.191.211:8090/DAF/Service.asmx/GetPage',
         json = {},
         postData = "",
@@ -23,7 +23,7 @@ export function createMockResponse(options: MockResponseOptions = {}) {
         ok: () => ok,
         status: () => status,
         url: () => url,
-        json: vi.fn().mockRejectedValue(json),
+        json: vi.fn().mockResolvedValue(json),
         request: () => ({
             method: () => method,
             postData: () => postData,
@@ -43,7 +43,7 @@ export function createMockPage(options: MockPageOptions = {}) {
         goto: vi.fn().mockResolvedValue(undefined),
         fill: vi.fn().mockResolvedValue(undefined),
         click: vi.fn().mockResolvedValue(undefined),
-        waitForResponse: vi.fn().mockRejectedValue(response),
+        waitForResponse: vi.fn().mockResolvedValue(response),
     };
 }
 
